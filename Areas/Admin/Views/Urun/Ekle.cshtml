@@ -1,0 +1,70 @@
+﻿@model KurumsalWebSitesi.Models.Entities.Urun
+@{
+    ViewData["Title"] = "Yeni Ürün Ekle";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h4 mb-0 text-dark fw-bold">Yeni Ürün Ekle</h2>
+    <a href="/Admin/Urun/Index" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left me-1"></i> Geri Dön
+    </a>
+</div>
+
+<form action="/Admin/Urun/Ekle" method="post" enctype="multipart/form-data" class="card p-4 shadow-sm border-0">
+    @Html.AntiForgeryToken()
+
+    <div class="row g-3 mb-3">
+        <div class="col-md-7">
+            <label class="fw-bold">Ürün Adı <span class="text-danger">*</span></label>
+            <input name="Ad" class="form-control" placeholder="Örn: Pleksi Işıklı Kutu Harf" required />
+        </div>
+        <div class="col-md-5">
+            <label class="fw-bold">Kategori</label>
+            <input name="Kategori" class="form-control" list="urunKategoriListesi" placeholder="Örn: Tabela Sistemleri" value="Genel" />
+            <datalist id="urunKategoriListesi">
+                <option value="Tabela Sistemleri" />
+                <option value="Dijital Baskı" />
+                <option value="Kutu Harf" />
+                <option value="Yönlendirme Levhaları" />
+                <option value="Folyo Uygulama" />
+                <option value="Led Ekran" />
+            </datalist>
+            <small class="text-muted">Listeden seçebilir veya yeni bir kategori adı yazabilirsiniz.</small>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="fw-bold">Ürün Görseli veya Tanıtım Videosu (MP4)</label>
+        <input type="file" name="resimDosyasi" class="form-control" accept="image/*,video/mp4,video/webm" />
+        <small class="text-muted">Resim (.jpg, .png) veya kısa döngü video (.mp4) seçebilirsiniz.</small>
+    </div>
+
+    <div class="mb-3">
+        <label class="fw-bold">Açıklama</label>
+        <textarea id="Aciklama" name="Aciklama" class="form-control"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="fw-bold">Teknik Detaylar</label>
+        <textarea id="TeknikDetaylar" name="TeknikDetaylar" class="form-control"></textarea>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary px-4">
+            <i class="fa-solid fa-floppy-disk me-1"></i> Kaydet
+        </button>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+    <style>
+        .ck-editor__editable_inline {
+            min-height: 200px;
+        }
+    </style>
+    <script>
+        ClassicEditor.create(document.querySelector('#Aciklama')).catch(error => console.error(error));
+        ClassicEditor.create(document.querySelector('#TeknikDetaylar')).catch(error => console.error(error));
+    </script>
+}

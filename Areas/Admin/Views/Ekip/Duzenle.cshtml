@@ -1,0 +1,80 @@
+﻿@model KurumsalWebSitesi.Models.Entities.EkipUyesi
+@{
+    ViewData["Title"] = "Ekip Üyesi Düzenle";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h4 mb-0 text-dark fw-bold">Ekip Üyesi Düzenle</h2>
+    <a href="/Admin/Ekip/Index" class="btn btn-secondary"><i class="fa-solid fa-arrow-left me-1"></i> Geri Dön</a>
+</div>
+
+<form action="/Admin/Ekip/Duzenle" method="post" enctype="multipart/form-data" class="card p-4 shadow-sm border-0">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <input type="hidden" name="ResimAdresi" value="@Model.ResimAdresi" />
+
+    <div class="mb-4 text-center">
+        @if (!string.IsNullOrEmpty(Model.ResimAdresi))
+        {
+            <img src="@Model.ResimAdresi" style="width:120px; height:120px; object-fit:cover;" class="rounded-circle border shadow-sm mb-2" />
+        }
+        else
+        {
+            <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" style="width:120px; height:120px; font-size: 3rem;">
+                <i class="fa-solid fa-user"></i>
+            </div>
+        }
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="fw-bold">Ad Soyad <span class="text-danger">*</span></label>
+            <input name="AdSoyad" class="form-control" value="@Model.AdSoyad" required />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="fw-bold">Ünvan / Pozisyon <span class="text-danger">*</span></label>
+            <input name="Unvan" class="form-control" value="@Model.Unvan" required />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="fw-bold">Fotoğrafı Değiştir</label>
+        <input type="file" name="resimDosyasi" class="form-control" accept="image/*" />
+        <small class="text-muted">Yeni fotoğraf seçilmezse mevcut fotoğraf korunur.</small>
+    </div>
+
+    <hr class="my-4" />
+    <h5 class="mb-3 text-muted">Sosyal Medya Hesapları</h5>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label class="fw-bold"><i class="fa-brands fa-linkedin text-primary me-1"></i> LinkedIn</label>
+            <input name="LinkedInAdresi" class="form-control" value="@Model.LinkedInAdresi" />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label class="fw-bold"><i class="fa-brands fa-twitter text-info me-1"></i> Twitter (X)</label>
+            <input name="TwitterAdresi" class="form-control" value="@Model.TwitterAdresi" />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label class="fw-bold"><i class="fa-brands fa-instagram text-danger me-1"></i> Instagram</label>
+            <input name="InstagramAdresi" class="form-control" value="@Model.InstagramAdresi" />
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-6 mb-3">
+            <label class="fw-bold">Gösterim Sırası</label>
+            <input type="number" name="Sira" class="form-control" value="@Model.Sira" />
+        </div>
+        <div class="col-md-6 mb-3 d-flex align-items-end pb-2">
+            <div class="form-check form-switch fs-5">
+                <input class="form-check-input" type="checkbox" name="AktifMi" value="true" @(Model.AktifMi ? "checked" : "") id="AktifMi">
+                <label class="form-check-label fw-bold ms-2" for="AktifMi">Sitede Göster (Aktif)</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary px-4 py-2"><i class="fa-solid fa-floppy-disk me-1"></i> Değişiklikleri Kaydet</button>
+    </div>
+</form>

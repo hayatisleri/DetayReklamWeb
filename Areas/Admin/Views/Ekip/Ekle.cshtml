@@ -1,0 +1,65 @@
+﻿@model KurumsalWebSitesi.Models.Entities.EkipUyesi
+@{
+    ViewData["Title"] = "Yeni Ekip Üyesi Ekle";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h4 mb-0 text-dark fw-bold">Yeni Ekip Üyesi Ekle</h2>
+    <a href="/Admin/Ekip/Index" class="btn btn-secondary"><i class="fa-solid fa-arrow-left me-1"></i> Geri Dön</a>
+</div>
+
+<form action="/Admin/Ekip/Ekle" method="post" enctype="multipart/form-data" class="card p-4 shadow-sm border-0">
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="fw-bold">Ad Soyad <span class="text-danger">*</span></label>
+            <input name="AdSoyad" class="form-control" required />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="fw-bold">Ünvan / Pozisyon <span class="text-danger">*</span></label>
+            <input name="Unvan" class="form-control" placeholder="Örn: Yazılım Uzmanı" required />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="fw-bold">Fotoğraf</label>
+        <input type="file" name="resimDosyasi" class="form-control" accept="image/*" />
+    </div>
+
+    <hr class="my-4" />
+    <h5 class="mb-3 text-muted">Sosyal Medya Hesapları</h5>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label class="fw-bold"><i class="fa-brands fa-linkedin text-primary me-1"></i> LinkedIn</label>
+            <input name="LinkedInAdresi" class="form-control" placeholder="https://linkedin.com/in/..." />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label class="fw-bold"><i class="fa-brands fa-twitter text-info me-1"></i> Twitter (X)</label>
+            <input name="TwitterAdresi" class="form-control" placeholder="https://twitter.com/..." />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label class="fw-bold"><i class="fa-brands fa-instagram text-danger me-1"></i> Instagram</label>
+            <input name="InstagramAdresi" class="form-control" placeholder="https://instagram.com/..." />
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-6 mb-3">
+            <label class="fw-bold">Gösterim Sırası</label>
+            <input type="number" name="Sira" class="form-control" value="99" />
+            <small class="text-muted">Küçük numara önde gösterilir.</small>
+        </div>
+        <div class="col-md-6 mb-3 d-flex align-items-end pb-2">
+            <div class="form-check form-switch fs-5">
+                <input class="form-check-input" type="checkbox" name="AktifMi" value="true" checked id="AktifMi">
+                <label class="form-check-label fw-bold ms-2" for="AktifMi">Sitede Göster (Aktif)</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary px-4 py-2"><i class="fa-solid fa-floppy-disk me-1"></i> Kaydet</button>
+    </div>
+</form>

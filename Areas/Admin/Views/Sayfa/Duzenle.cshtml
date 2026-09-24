@@ -1,0 +1,86 @@
+﻿@model KurumsalWebSitesi.Models.Entities.Sayfa
+
+@{
+    ViewData["Title"] = "Sayfa Düzenle";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h4 mb-0 text-gray-800">Sayfa Düzenle</h2>
+    <a href="/Admin/Sayfa/Index" class="btn btn-secondary"><i class="fa-solid fa-arrow-left me-1"></i> Geri Dön</a>
+</div>
+
+<form action="/Admin/Sayfa/Duzenle" method="post">
+    @Html.AntiForgeryToken()
+
+    <!-- Güncelleme işlemi için Id ve gizli alanlar gereklidir -->
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <input type="hidden" name="OlusturulmaTarihi" value="@Model.OlusturulmaTarihi.ToString("yyyy-MM-ddTHH:mm:ss")" />
+
+    <div class="row">
+        <!-- Sol Taraf: Ana İçerik -->
+        <div class="col-md-8">
+            <div class="card mb-4 shadow-sm border-0">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="Baslik" class="form-label fw-bold">Sayfa Başlığı <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="Baslik" name="Baslik" required value="@Model.Baslik">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Icerik" class="form-label fw-bold">Sayfa İçeriği</label>
+                        <!-- Html.Raw ile zengin metni ham HTML olarak editöre aktarıyoruz -->
+                        <textarea id="Icerik" name="Icerik" class="form-control">@Html.Raw(Model.Icerik)</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sağ Taraf: SEO ve Ayarlar -->
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm border-0">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="SeoUrl" class="form-label fw-bold">SEO URL (Slug) <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="SeoUrl" name="SeoUrl" required value="@Model.SeoUrl">
+                        <small class="text-danger">Mevcut link yapısını bozmamak için dikkatli değiştirin.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="SeoBasligi" class="form-label fw-bold">SEO Başlığı (Title)</label>
+                        <input type="text" class="form-control" id="SeoBasligi" name="SeoBasligi" value="@Model.SeoBasligi">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="SeoAciklamasi" class="form-label fw-bold">SEO Açıklaması (Description)</label>
+                        <textarea class="form-control" id="SeoAciklamasi" name="SeoAciklamasi" rows="3">@Model.SeoAciklamasi</textarea>
+                    </div>
+
+                    <div class="mb-4 form-check form-switch mt-3">
+                        <input class="form-check-input" type="checkbox" role="switch" id="AktifMi" name="AktifMi" value="true" @(Model.AktifMi ? "checked" : "")>
+                        <label class="form-check-label fw-bold" for="AktifMi">Sayfa Aktif Olsun Mu?</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2"><i class="fa-solid fa-floppy-disk me-1"></i> Değişiklikleri Kaydet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <!-- CKEditor 5 CDN -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+    <style>
+        .ck-editor__editable_inline {
+            min-height: 400px;
+        }
+    </style>
+    <script>
+        // CKEditor Kurulumu
+        ClassicEditor
+            .create(document.querySelector('#Icerik'))
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+}

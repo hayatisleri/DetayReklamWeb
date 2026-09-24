@@ -1,0 +1,184 @@
+@model KurumsalWebSitesi.Models.Entities.SiteAyari
+@inject KurumsalWebSitesi.Models.KurumsalDbContext DbContext
+@{
+    ViewData["Title"] = "İletişim & Fiyat Teklifi";
+
+    // Model Controller'dan boş geldiyse doğrudan DbContext üzerinden al
+    var ayar = Model ?? DbContext.SiteAyarlari.FirstOrDefault();
+
+    var telefonMetni = !string.IsNullOrWhiteSpace(ayar?.TelefonNumarasi) ? ayar.TelefonNumarasi : "0424 233 87 77";
+    var telefonLink = telefonMetni.Replace(" ", "").Replace("(", "").Replace(")", "").Replace("-", "");
+    var mailMetni = !string.IsNullOrWhiteSpace(ayar?.EpostaAdresi) ? ayar.EpostaAdresi : "info@detayreklam.com";
+    var adresMetni = !string.IsNullOrWhiteSpace(ayar?.Adres) ? ayar.Adres : "Rızaiye Mh., Şht. Mehmet Güçlü Caddesi No:66/B ELAZIĞ";
+    var whatsappMetni = !string.IsNullOrWhiteSpace(ayar?.WhatsappNumarasi) ? ayar.WhatsappNumarasi : telefonMetni;
+    var wpTemiz = new string(whatsappMetni.Where(char.IsDigit).ToArray());
+    if (wpTemiz.StartsWith("0")) { wpTemiz = "9" + wpTemiz; }
+    else if (!wpTemiz.StartsWith("90")) { wpTemiz = "90" + wpTemiz; }
+}
+
+<style>
+    .contact-wrapper {
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 30px 20px 60px 20px;
+    }
+    .form-box-compact {
+        max-width: 580px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 32px 28px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+    .form-box-compact .form-control,
+    .form-box-compact .form-select {
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        padding: 9px 12px;
+        transition: all 0.2s;
+    }
+    .form-box-compact .form-control:focus,
+    .form-box-compact .form-select:focus {
+        border-color: #FFB703;
+        box-shadow: 0 0 0 3px rgba(255, 183, 3, 0.2);
+    }
+    .form-box-compact .btn-submit-custom {
+        background-color: #FFB703;
+        color: #0f172a;
+        font-weight: 800;
+        font-size: 0.92rem;
+        padding: 12px 20px;
+        border-radius: 6px;
+        border: none;
+        transition: all 0.2s;
+    }
+    .form-box-compact .btn-submit-custom:hover {
+        background-color: #e09f00;
+        color: #000000;
+        transform: translateY(-1px);
+    }
+    .contact-info-link {
+        color: inherit;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+    .contact-info-link:hover {
+        color: #d97706;
+    }
+</style>
+
+<div class="contact-wrapper">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-muted">Ana Sayfa</a></li>
+            <li class="breadcrumb-item active fw-bold text-dark">İletişim</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4 align-items-start">
+        <!-- Sol Taraf: Dinamik Detay Reklam İletişim Bilgileri -->
+        <div class="col-lg-5 col-xl-5">
+            <div class="card border-0 shadow-sm rounded-3 p-4 h-100 bg-white">
+                <h3 class="fw-bold text-dark mb-3 border-start border-4 border-warning ps-3">Bize Ulaşın</h3>
+                <p class="text-muted mb-4">Projeniz için ölçü, keşif ve fiyat teklifi almak üzere bizimle hemen iletişime geçebilirsiniz.</p>
+
+                <div class="d-flex align-items-start mb-4">
+                    <div class="bg-warning bg-opacity-25 text-warning p-3 rounded-circle me-3">
+                        <i class="bi bi-geo-alt-fill fs-4 text-dark"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Adresimiz</h6>
+                        <span class="text-muted small">@adresMetni</span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-start mb-4">
+                    <div class="bg-warning bg-opacity-25 text-warning p-3 rounded-circle me-3">
+                        <i class="bi bi-telephone-fill fs-4 text-dark"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Telefon Numarası</h6>
+                        <a href="tel:@telefonLink" class="text-muted small contact-info-link d-block">@telefonMetni</a>
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(ayar?.WhatsappNumarasi))
+                {
+                    <div class="d-flex align-items-start mb-4">
+                        <div class="bg-success bg-opacity-25 text-success p-3 rounded-circle me-3">
+                            <i class="bi bi-whatsapp fs-4 text-success"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1">WhatsApp Hattı</h6>
+                            <a href="https://wa.me/@wpTemiz?text=Merhaba,%20tabela%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum." target="_blank" class="text-muted small contact-info-link d-block">
+                                @ayar.WhatsappNumarasi (Mesaj Gönder)
+                            </a>
+                        </div>
+                    </div>
+                }
+
+                <div class="d-flex align-items-start mb-4">
+                    <div class="bg-warning bg-opacity-25 text-warning p-3 rounded-circle me-3">
+                        <i class="bi bi-envelope-fill fs-4 text-dark"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1">E-Posta</h6>
+                        <a href="mailto:@mailMetni" class="text-muted small contact-info-link d-block">@mailMetni</a>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-start">
+                    <div class="bg-warning bg-opacity-25 text-warning p-3 rounded-circle me-3">
+                        <i class="bi bi-clock-fill fs-4 text-dark"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Çalışma Saatleri</h6>
+                        <span class="text-muted small">Pazartesi - Cumartesi: 08:30 - 18:30</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sağ Taraf: Teklif Formu -->
+        <div class="col-lg-7 col-xl-7 d-flex justify-content-lg-start">
+            <div class="form-box-compact w-100">
+                <h4 class="fw-bold text-dark mb-1">Hızlı Teklif Formu</h4>
+                <p class="text-muted small mb-4">Aşağıdaki formu doldurun, proje uzmanlarımız en kısa sürede size geri dönüş sağlasın.</p>
+
+                <form>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold small text-secondary">Adınız Soyadınız *</label>
+                            <input type="text" class="form-control" placeholder="Örn: Ahmet Yılmaz" required />
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold small text-secondary">Telefon Numaranız *</label>
+                            <input type="tel" class="form-control" placeholder="05XX XXX XX XX" required />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold small text-secondary">İlgilendiğiniz Hizmet / Tabela Türü</label>
+                            <select class="form-select">
+                                <option selected>Seçiniz...</option>
+                                <option>Işıklı Kutu Harf Tabela</option>
+                                <option>Totem &amp; Yol Tabelası</option>
+                                <option>Pleksi / Alüminyum Tabela</option>
+                                <option>Araç / Cephe Giydirme</option>
+                                <option>Diğer Özel Reklam İşi</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold small text-secondary">Mesajınız / Proje Ölçüleri</label>
+                            <textarea class="form-control" rows="4" placeholder="Tabela ölçüleri veya istediğiniz tasarımı kısaca açıklayın..."></textarea>
+                        </div>
+                        <div class="col-12 mt-2">
+                            <button type="button" class="btn btn-submit-custom w-100" onclick="alert('Mesajınız başarıyla iletildi. En kısa sürede sizinle iletişime geçeceğiz.')">
+                                <i class="bi bi-send-fill me-2"></i> Teklif Talebini Gönder
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

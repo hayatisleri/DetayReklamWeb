@@ -1,0 +1,317 @@
+@model List<KurumsalWebSitesi.Models.Entities.Slayt>
+@{
+    var dinamikKutular = ViewBag.OneCikanKutular as List<KurumsalWebSitesi.Models.Entities.OneCikanKutu>;
+    var renkDizisi = new string[] { "box-yellow" };
+    int sayac = 0;
+}
+
+<style>
+    /* TAM EKRAN SLIDER */
+    .hero-fullscreen-wrapper {
+        position: relative;
+        width: 100%;
+        min-height: 580px;
+        background-color: #0b0f19;
+        overflow: hidden;
+    }
+
+    .hero-slider-img {
+        width: 100%;
+        height: 580px;
+        object-fit: cover;
+        transform: scale(1.03);
+        transition: transform 6s ease-in-out;
+    }
+
+    .carousel-item.active .hero-slider-img {
+        transform: scale(1.1);
+    }
+
+    .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(180deg, rgba(8, 11, 20, 0.72) 0%, rgba(5, 7, 15, 0.85) 100%);
+        z-index: 2;
+    }
+
+    .hero-content-layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 0 20px;
+    }
+
+    .hero-title-main {
+        font-size: 3.6rem;
+        font-weight: 900;
+        line-height: 1.15;
+        letter-spacing: -0.5px;
+        color: #ffffff;
+        text-transform: uppercase;
+    }
+
+    .hero-subtitle-text {
+        color: #e2e8f0;
+        font-size: 1.25rem;
+        max-width: 760px;
+        margin: 20px auto 35px auto;
+        font-weight: 400;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+    }
+
+    .btn-hero-primary {
+        background-color: #FFB703;
+        color: #0b0f19 !important;
+        font-weight: 800;
+        font-size: 1.05rem;
+        padding: 14px 34px;
+        border-radius: 6px;
+        text-decoration: none;
+        display: inline-block;
+        box-shadow: 0 0 25px rgba(255, 183, 3, 0.45);
+        transition: all 0.3s ease;
+        border: 2px solid #FFB703;
+    }
+
+    .btn-hero-primary:hover {
+        background-color: transparent;
+        color: #FFB703 !important;
+        box-shadow: 0 0 35px rgba(255, 183, 3, 0.7);
+        transform: translateY(-2px);
+    }
+
+    .btn-hero-outline {
+        border: 2px solid #ffffff;
+        color: #ffffff !important;
+        font-weight: 700;
+        font-size: 1.05rem;
+        padding: 14px 30px;
+        border-radius: 6px;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+    }
+
+    .btn-hero-outline:hover {
+        background-color: #ffffff;
+        color: #0b0f19 !important;
+        transform: translateY(-2px);
+    }
+
+    /* KUTULARI TAŞIYAN ŞERİT - BEYAZLIĞI YOK EDEN ANTRASİT ZEMİN */
+    .hero-boxes-strip {
+        background-color: #141923 !important;
+        padding: 35px 0 25px 0;
+        position: relative;
+        z-index: 5;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .boxes-scroll-container {
+        display: flex;
+        gap: 20px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding-bottom: 15px;
+        padding-top: 5px;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+    }
+
+    .boxes-scroll-container::-webkit-scrollbar {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+    }
+
+    .box-item {
+        flex: 0 0 320px;
+        min-width: 280px;
+    }
+
+    .feature-box {
+        background: #FFB703 !important;
+        border: 1px solid #e09f00 !important;
+        color: #0b0f19 !important;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        text-decoration: none;
+        padding: 22px 26px;
+        border-radius: 12px;
+        min-height: 95px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+        transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+    }
+
+    .feature-box h4 {
+        color: #0b0f19 !important;
+        font-weight: 800;
+        font-size: 1.15rem;
+        letter-spacing: -0.2px;
+    }
+
+    .feature-box i {
+        color: #0b0f19 !important;
+        font-size: 1.85rem !important;
+        transition: transform 0.25s ease;
+    }
+
+    .feature-box:hover {
+        transform: translateY(-5px);
+        background: #ffc229 !important;
+        box-shadow: 0 12px 28px rgba(255, 183, 3, 0.4);
+        color: #000000 !important;
+    }
+
+    .feature-box:hover i {
+        transform: scale(1.18);
+    }
+</style>
+
+<div class="hero-fullscreen-wrapper">
+    <!-- ARKA PLANDAKİ GEÇİŞLİ SLIDER FOTOĞRAFLARI -->
+    @if (Model != null && Model.Any(x => x.AktifMi))
+    {
+        var aktifSlaytlar = Model.Where(x => x.AktifMi).OrderBy(x => x.Sira).ToList();
+
+        <div id="aktasStyleCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4500">
+            <div class="carousel-inner">
+                @for (int i = 0; i < aktifSlaytlar.Count; i++)
+                {
+                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                        <img src="@aktifSlaytlar[i].ResimAdresi" class="d-block hero-slider-img" alt="@aktifSlaytlar[i].Baslik">
+                    </div>
+                }
+            </div>
+
+            @if (aktifSlaytlar.Count > 1)
+            {
+                <button class="carousel-control-prev" type="button" data-bs-target="#aktasStyleCarousel" data-bs-slide="prev" style="z-index: 4;">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#aktasStyleCarousel" data-bs-slide="next" style="z-index: 4;">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                </button>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="~/uploads/slaytlar/tabela1.jpg" class="d-block hero-slider-img" alt="Detay Reklam Tabela">
+            </div>
+        </div>
+    }
+
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content-layer">
+        <div class="container">
+            <span class="d-inline-block px-3 py-1 mb-3 rounded-pill text-uppercase fw-bold" style="background: rgba(255, 183, 3, 0.15); color: #FFB703; border: 1px solid rgba(255, 183, 3, 0.4); font-size: 0.85rem; letter-spacing: 2px;">
+                Işıklı Tabela &amp; Kurumsal Reklam Sistemleri
+            </span>
+            <h1 class="hero-title-main">
+                ŞEHRİNİZE IŞIK KATAN <br />
+                <span style="color: #FFB703; text-shadow: 0 0 30px rgba(255, 183, 3, 0.5);">
+                    DETAY REKLAM
+                </span>
+            </h1>
+            <p class="hero-subtitle-text">
+                Kutu harf, totem, kompozit cephe kaplama, neon ve lazer kesim çözümlerimizle firmanızın kurumsal vitrinini en üst seviyeye taşıyoruz.
+            </p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="#cozumler" class="btn-hero-primary">Hizmetlerimizi İnceleyin</a>
+                <a href="/Iletisim" class="btn-hero-outline">Teklif İsteyin</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SARI KUTULAR ŞERİDİ (BEYAZLIĞI DOLDURAN ANTRASİT ALAN) -->
+<div class="hero-boxes-strip">
+    <div class="container">
+        <div id="autoScrollTrack" class="boxes-scroll-container">
+
+            <!-- 1. Sabit: Tabela Sistemleri -->
+            <div class="box-item">
+                <a href="#cozumler" class="feature-box">
+                    <h4 class="mb-0 text-truncate me-2">Tabela Sistemleri</h4>
+                    <i class="bi bi-lightning-charge-fill fs-3"></i>
+                </a>
+            </div>
+
+            <!-- 2. Sabit: Dijital Baskı & Folyo -->
+            <div class="box-item">
+                <a href="#cozumler" class="feature-box">
+                    <h4 class="mb-0 text-truncate me-2">Dijital Baskı &amp; Folyo</h4>
+                    <i class="bi bi-printer-fill fs-3"></i>
+                </a>
+            </div>
+
+            <!-- 3. Sabit: Kurumsal Giydirme -->
+            <div class="box-item">
+                <a href="#cozumler" class="feature-box">
+                    <h4 class="mb-0 text-truncate me-2">Kurumsal Giydirme</h4>
+                    <i class="bi bi-building-fill fs-3"></i>
+                </a>
+            </div>
+
+            <!-- Adminden Eklenenler -->
+            @if (dinamikKutular != null && dinamikKutular.Any())
+            {
+                @foreach (var kutu in dinamikKutular)
+                {
+                    <div class="box-item">
+                        <a href="@(!string.IsNullOrEmpty(kutu.Link) ? kutu.Link : "#cozumler")" class="feature-box">
+                            <h4 class="mb-0 text-truncate me-2">@kutu.Baslik</h4>
+                            <i class="@(!string.IsNullOrEmpty(kutu.Ikon) ? kutu.Ikon : "bi bi-star-fill") fs-3"></i>
+                        </a>
+                    </div>
+                }
+            }
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const track = document.getElementById('autoScrollTrack');
+        if (!track) return;
+
+        let isPaused = false;
+        let speed = 1;
+
+        track.addEventListener('mouseenter', () => isPaused = true);
+        track.addEventListener('mouseleave', () => isPaused = false);
+        track.addEventListener('touchstart', () => isPaused = true, { passive: true });
+        track.addEventListener('touchend', () => isPaused = false, { passive: true });
+
+        function autoScroll() {
+            if (!isPaused) {
+                if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 2) {
+                    track.scrollLeft = 0;
+                } else {
+                    track.scrollLeft += speed;
+                }
+            }
+            requestAnimationFrame(autoScroll);
+        }
+
+        requestAnimationFrame(autoScroll);
+    });
+</script>

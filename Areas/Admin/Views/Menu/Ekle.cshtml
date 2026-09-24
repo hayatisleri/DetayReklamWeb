@@ -1,0 +1,64 @@
+﻿@model KurumsalWebSitesi.Models.Entities.Menu
+@{
+    ViewData["Title"] = "Menü Ekle";
+    var anaMenuler = ViewBag.AnaMenuler as List<KurumsalWebSitesi.Models.Entities.Menu>;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h4 mb-0 text-dark fw-bold">Yeni Menü Ekle</h2>
+    <a href="/Admin/Menu/Index" class="btn btn-secondary"><i class="fa-solid fa-arrow-left me-1"></i> Geri Dön</a>
+</div>
+
+<form action="/Admin/Menu/Ekle" method="post" class="card p-4 shadow-sm border-0">
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="fw-bold">Menü Başlığı</label>
+            <input name="Baslik" class="form-control" id="menuBaslik" required />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="fw-bold">URL / Sayfa Seç</label>
+            <!-- Burası kullanıcıya seçim şansı sunar -->
+            <select class="form-select" onchange="document.getElementById('urlInput').value = this.value">
+                <option value="">-- Özel URL Girin veya Seçin --</option>
+                @foreach (var sayfa in ViewBag.SayfaListesi as Dictionary<string, string>)
+                {
+                    <option value="@sayfa.Value">@sayfa.Key</option>
+                }
+            </select>
+            <input name="Url" id="urlInput" class="form-control mt-2" placeholder="Örn: /Iletisim/Index" required />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="fw-bold">Üst Menü (Açılır Menü Yapmak İçin)</label>
+            <select name="UstMenuId" class="form-select">
+                <option value="">-- Bu Bir Ana Menüdür --</option>
+                @if (anaMenuler != null)
+                {
+                    foreach (var item in anaMenuler)
+                    {
+                        <option value="@item.Id">@item.Baslik</option>
+                    }
+                }
+            </select>
+            <small class="text-muted">Bu menüyü başka bir menünün altına eklemek istiyorsanız seçin.</small>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label class="fw-bold">Sıra</label>
+            <input type="number" name="Sira" class="form-control" value="99" />
+        </div>
+        <div class="col-md-3 mb-3 d-flex align-items-end pb-2">
+            <div class="form-check form-switch fs-5">
+                <input class="form-check-input" type="checkbox" name="AktifMi" value="true" checked id="AktifMi">
+                <label class="form-check-label fw-bold ms-2" for="AktifMi">Aktif</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary px-4 py-2"><i class="fa-solid fa-floppy-disk me-1"></i> Kaydet</button>
+    </div>
+</form>

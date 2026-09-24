@@ -1,0 +1,30 @@
+@model KurumsalWebSitesi.Models.Entities.Sayfa
+@{
+    ViewData["Title"] = Model?.Baslik ?? "Kurumsal";
+}
+
+<!-- ÜST BANNER -->
+<div class="py-5 bg-dark text-white text-center mb-0" style="background: radial-gradient(circle at center, #1e1b4b 0%, #0a0e27 100%);">
+    <div class="container py-4">
+        <span class="badge bg-primary px-3 py-2 rounded-pill text-uppercase mb-2" style="font-size: 0.75rem; letter-spacing: 1px;">Kurumsal</span>
+        <h1 class="fw-bold display-5">@Model?.Baslik</h1>
+        <p class="text-white-50 mb-0">İşletmeniz İçin Değer Üreten Çözümler</p>
+    </div>
+</div>
+
+@if (Model != null && Model.SeoUrl == "hakkimizda")
+{
+    <!-- HAKKIMIZDA BİLEŞENİ VE DİNAMİK MÜŞTERİ YORUMLARI -->
+    @await Component.InvokeAsync("Hakkimizda")
+}
+else
+{
+    <!-- DİĞER STANDART KURUMSAL SAYFALAR -->
+    <div class="container py-5 my-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5">
+            <div class="content-body" style="line-height: 1.8; color: #475569;">
+                @Html.Raw(Model?.Icerik)
+            </div>
+        </div>
+    </div>
+}

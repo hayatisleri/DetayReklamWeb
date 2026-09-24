@@ -1,0 +1,53 @@
+﻿@model KurumsalWebSitesi.Models.Entities.IletisimMesaji
+@{
+    ViewData["Title"] = "Mesaj Detayı";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h4 mb-0 text-dark fw-bold">Mesaj Detayı</h2>
+    <a href="/Admin/IletisimMesaji/Index" class="btn btn-secondary"><i class="fa-solid fa-arrow-left me-1"></i> Gelen Kutusu</a>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white border-bottom p-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold">@Model.Konu</h5>
+            <span class="text-muted"><i class="fa-regular fa-clock me-1"></i> @Model.GonderilmeTarihi.ToString("dd MMMM yyyy, HH:mm")</span>
+        </div>
+    </div>
+
+    <div class="card-body p-4 bg-light">
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="text-muted small mb-1">Gönderen:</div>
+                <div class="fw-bold fs-5">@Model.AdSoyad</div>
+            </div>
+            <div class="col-md-4 mt-3 mt-md-0">
+                <div class="text-muted small mb-1">E-Posta Adresi:</div>
+                <a href="mailto:@Model.Eposta" class="fw-bold text-decoration-none">@Model.Eposta</a>
+            </div>
+            <div class="col-md-4 mt-3 mt-md-0 text-md-start text-md-end">
+                <div class="text-muted small mb-1">Telefon:</div>
+                <a href="tel:@Model.Telefon" class="fw-bold text-decoration-none text-dark">@Model.Telefon</a>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="mt-4">
+            <div class="text-muted small mb-3">Mesaj İçeriği:</div>
+            <div class="p-4 bg-white rounded border" style="min-height: 150px; font-size: 1.05rem; line-height: 1.6;">
+                @Html.Raw(Model.Mesaj.Replace("\n", "<br/>"))
+            </div>
+        </div>
+    </div>
+
+    <div class="card-footer bg-white p-3 text-end">
+        <a href="mailto:@Model.Eposta" class="btn btn-primary px-4"><i class="fa-solid fa-reply me-1"></i> Yanıtla</a>
+
+        <form action="/Admin/IletisimMesaji/Sil" method="post" class="d-inline ms-2" onsubmit="return confirm('Bu mesajı kalıcı olarak silmek istediğinize emin misiniz?');">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button class="btn btn-outline-danger"><i class="fa-solid fa-trash me-1"></i> Sil</button>
+        </form>
+    </div>
+</div>

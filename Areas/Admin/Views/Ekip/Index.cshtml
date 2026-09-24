@@ -1,0 +1,110 @@
+﻿@model IEnumerable<KurumsalWebSitesi.Models.Entities.EkipUyesi>
+@{
+    ViewData["Title"] = "Ekip Yönetimi";
+}
+
+<style>
+    .table-corporate thead th {
+        background-color: #1A2530 !important;
+        color: #ffffff !important;
+    }
+
+    .btn-corporate {
+        background-color: #3498DB;
+        color: #fff;
+    }
+
+    .mobile-card {
+        background: #fff;
+        border: 1px solid #e3e6f0;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h4 mb-0 fw-bold text-dark">Ekibimiz</h2>
+    <a href="/Admin/Ekip/Ekle" class="btn btn-corporate"><i class="fa-solid fa-plus me-1"></i> Yeni Üye Ekle</a>
+</div>
+
+<div class="d-none d-md-block shadow-sm rounded">
+    <table class="table table-hover align-middle bg-white table-corporate mb-0">
+        <thead>
+            <tr>
+                <th>Fotoğraf</th>
+                <th>Ad Soyad</th>
+                <th>Ünvan</th>
+                <th>Sıra</th>
+                <th>Durum</th>
+                <th class="text-end">İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.ResimAdresi))
+                        {
+                            <img src="@item.ResimAdresi" style="width:50px; height:50px; object-fit:cover;" class="rounded-circle border" />
+                        }
+                        else
+                        {
+                            <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width:50px; height:50px;">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                        }
+                    </td>
+                    <td class="fw-bold">@item.AdSoyad</td>
+                    <td class="text-muted">@item.Unvan</td>
+                    <td>@item.Sira</td>
+                    <td>
+                        <span class="badge @(item.AktifMi ? "bg-success" : "bg-danger")">@(item.AktifMi ? "Aktif" : "Pasif")</span>
+                    </td>
+                    <td class="text-end">
+                        <a href="/Admin/Ekip/Duzenle/@item.Id" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <form action="/Admin/Ekip/Sil" method="post" class="d-inline" onsubmit="return confirm('Bu ekip üyesini silmek istediğinize emin misiniz?');">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="d-md-none">
+    @foreach (var item in Model)
+    {
+        <div class="mobile-card p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center">
+                    @if (!string.IsNullOrEmpty(item.ResimAdresi))
+                    {
+                        <img src="@item.ResimAdresi" style="width:50px; height:50px; object-fit:cover;" class="rounded-circle border me-3" />
+                    }
+                    else
+                    {
+                        <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width:50px; height:50px;">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                    }
+                    <div>
+                        <strong class="d-block text-dark">@item.AdSoyad</strong>
+                        <small class="text-muted">@item.Unvan</small>
+                    </div>
+                </div>
+                <span class="badge @(item.AktifMi ? "bg-success" : "bg-danger")">@(item.AktifMi ? "Aktif" : "Pasif")</span>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="/Admin/Ekip/Duzenle/@item.Id" class="btn btn-sm btn-outline-primary flex-grow-1">Düzenle</a>
+                <form action="/Admin/Ekip/Sil" method="post" class="flex-grow-1" onsubmit="return confirm('Silinsin mi?');">
+                    <input type="hidden" name="id" value="@item.Id" />
+                    <button type="submit" class="btn btn-sm btn-outline-danger w-100">Sil</button>
+                </form>
+            </div>
+        </div>
+    }
+</div>

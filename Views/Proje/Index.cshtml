@@ -1,0 +1,175 @@
+@model List<KurumsalWebSitesi.Models.Entities.Proje>
+@{
+    ViewData["Title"] = "Projelerimiz";
+    var kategoriler = Model?
+        .Where(p => !string.IsNullOrWhiteSpace(p.Kategori))
+        .Select(p => p.Kategori.Trim())
+        .Distinct()
+        .ToList() ?? new List<string>();
+}
+
+<section class="py-5 bg-light">
+    <div class="container py-4">
+        <!-- Başlık Bölümü -->
+        <div class="text-center mb-4">
+            <span class="badge bg-primary px-3 py-2 rounded-pill text-uppercase mb-2" style="font-size: 0.75rem; letter-spacing: 1px;">Portfolyo</span>
+            <h1 class="display-5 fw-bold text-dark mb-2">Tamamlanan ve Devam Eden Projeler</h1>
+            <p class="text-muted">Gururla imza attığımız vizyoner çalışmalarımız</p>
+        </div>
+
+        <!-- Kategori Filtreleme Butonları -->
+        @if (kategoriler.Any())
+        {
+            <div class="d-flex justify-content-center flex-wrap gap-2 mb-5">
+                <button type="button" class="btn btn-filter active" data-filter="all">Tümü</button>
+                @foreach (var kat in kategoriler)
+                {
+                    var slug = kat.ToLower().Replace(" ", "-").Replace("ı", "i").Replace("ğ", "g").Replace("ü", "u").Replace("ş", "s").Replace("ö", "o").Replace("ç", "c");
+                    <button type="button" class="btn btn-filter" data-filter="@slug">@kat</button>
+                }
+            </div>
+        }
+
+        <div class="row g-4" id="projectGrid">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var proje in Model)
+                {
+                    var dosyaYolu = !string.IsNullOrEmpty(proje.KapakResmi) ? proje.KapakResmi : "";
+                    var videoMu = dosyaYolu.EndsWith(".mp4", StringComparison.OrdinalIgnoreCase) ||
+                                  dosyaYolu.EndsWith(".webm", StringComparison.OrdinalIgnoreCase);
+
+                    var katSlug = !string.IsNullOrWhiteSpace(proje.Kategori)
+                        ? proje.Kategori.Trim().ToLower().Replace(" ", "-").Replace("ı", "i").Replace("ğ", "g").Replace("ü", "u").Replace("ş", "s").Replace("ö", "o").Replace("ç", "c")
+                        : "genel";
+
+                    string hamIcerik = proje.Icerik ?? "";
+                    string temizMetin = System.Text.RegularExpressions.Regex.Replace(hamIcerik, "<.*?>", string.Empty).Trim();
+                    string kisaOzet = string.IsNullOrWhiteSpace(temizMetin)
+                        ? "Bu proje hakkında kapsamlı üretim ve montaj detaylarını incelemek için butona tıklayabilirsiniz."
+                        : (temizMetin.Length > 115 ? temizMetin.Substring(0, 115) + "..." : temizMetin);
+
+                    <div class="col-md-6 col-lg-4 project-item" data-category="@katSlug">
+                        <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden project-card transition-all">
+                            <!-- Medya Alanı -->
+                            <div class="position-relative project-media-box">
+                                @if (!string.IsNullOrEmpty(dosyaYolu))
+                                {
+                                    @if (videoMu)
+                                    {
+                                        <video autoplay muted loop playsinline class="w-100 h-100 object-fit-cover">
+                                            <source src="@dosyaYolu" type="video/mp4">
+                                        </video>
+                                    }
+                                    else
+                                    {
+                                        <img src="@dosyaYolu" alt="@proje.Baslik" class="w-100 h-100 object-fit-cover" />
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="w-100 h-100 bg-secondary bg-opacity-25 d-flex align-items-center justify-content-center text-muted">
+                                        <i class="fa-solid fa-image fs-1"></i>
+                                    </div>
+                                }
+
+                                <!-- Kategori Rozeti -->
+                                <span class="position-absolute top-0 end-0 m-3 badge bg-dark bg-opacity-75 text-white px-3 py-2 rounded-pill fw-semibold shadow-sm" style="backdrop-filter: blur(4px);">
+                                    <i class="fa-solid fa-tag me-1 text-info"></i> @(string.IsNullOrWhiteSpace(proje.Kategori) ? "Proje" : proje.Kategori)
+                                </span>
+                            </div>
+
+                            <!-- Bilgi Alanı -->
+                            <div class="card-body p-4 d-flex flex-column justify-content-between">
+                                <div>
+                                    <h4 class="card-title fw-bold text-dark mb-2">@proje.Baslik</h4>
+                                    <p class="card-text text-secondary small mb-4" style="line-height: 1.6;">
+                                        @kisaOzet
+                                    </p>
+                                </div>
+
+                                <a href="/Proje/Detay/@proje.Id" class="btn btn-outline-primary rounded-pill w-100 py-2 fw-semibold d-flex align-items-center justify-content-center gap-2">
+                                    <span>Projeyi İncele</span>
+                                    <i class="fa-solid fa-arrow-right small"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center py-5 text-muted">
+                    <i class="fa-solid fa-diagram-project fs-1 mb-3 text-secondary"></i>
+                    <p class="fs-5 mb-0">Henüz yayınlanmış bir proje bulunmamaktadır.</p>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<style>
+    .project-media-box {
+        height: 230px;
+        background-color: #0b1120;
+        overflow: hidden;
+    }
+    .project-media-box img, .project-media-box video {
+        transition: transform 0.4s ease;
+    }
+    .project-card:hover .project-media-box img,
+    .project-card:hover .project-media-box video {
+        transform: scale(1.05);
+    }
+    .project-card {
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        border: 1px solid rgba(0,0,0,0.05) !important;
+    }
+    .project-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    /* Kategori Butonları */
+    .btn-filter {
+        border-radius: 50px;
+        padding: 8px 22px;
+        font-weight: 600;
+        font-size: 0.88rem;
+        background-color: #ffffff;
+        color: #475569;
+        border: 1px solid #cbd5e1;
+        transition: all 0.2s ease;
+    }
+    .btn-filter:hover, .btn-filter.active {
+        background-color: #0d6efd;
+        color: #ffffff;
+        border-color: #0d6efd;
+        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.25);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const filterBtns = document.querySelectorAll('.btn-filter');
+        const items = document.querySelectorAll('.project-item');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', function () {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                const selectedFilter = this.getAttribute('data-filter');
+
+                items.forEach(item => {
+                    const itemCategory = item.getAttribute('data-category');
+                    if (selectedFilter === 'all' || itemCategory === selectedFilter) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+    });
+</script>

@@ -1,0 +1,808 @@
+﻿@inject KurumsalWebSitesi.Models.KurumsalDbContext DbContext
+@{
+    var dinamikHizmetler = DbContext.Hizmetler.Where(h => h.AktifMi).OrderBy(h => h.Sira).ToList();
+    var dinamikSiteAyari = DbContext.SiteAyarlari.FirstOrDefault();
+
+    var telefonMetni = !string.IsNullOrWhiteSpace(dinamikSiteAyari?.TelefonNumarasi) ? dinamikSiteAyari.TelefonNumarasi : "+90 (537) 507 04 10";
+    var telefonLink = telefonMetni.Replace(" ", "").Replace("(", "").Replace(")", "").Replace("-", "");
+    var mailMetni = !string.IsNullOrWhiteSpace(dinamikSiteAyari?.EpostaAdresi) ? dinamikSiteAyari.EpostaAdresi : "info@detayreklam.com";
+
+    var rawWpNo = !string.IsNullOrWhiteSpace(dinamikSiteAyari?.WhatsappNumarasi) ? dinamikSiteAyari.WhatsappNumarasi : telefonMetni;
+    var sadeceRakamlarWp = new string(rawWpNo.Where(char.IsDigit).ToArray());
+    if (sadeceRakamlarWp.StartsWith("0"))
+    {
+        sadeceRakamlarWp = "9" + sadeceRakamlarWp;
+    }
+    else if (!sadeceRakamlarWp.StartsWith("90"))
+    {
+        sadeceRakamlarWp = "90" + sadeceRakamlarWp;
+    }
+
+    var whatsappLink = "https://wa.me/" + sadeceRakamlarWp + "?text=Merhaba,%20tabela%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum.";
+
+    var rawInsta = dinamikSiteAyari?.InstagramAdresi?.Trim();
+    var instagramLink = "https://www.instagram.com/";
+    if (!string.IsNullOrWhiteSpace(rawInsta))
+    {
+        if (rawInsta.StartsWith("http://") || rawInsta.StartsWith("https://"))
+        {
+            instagramLink = rawInsta;
+        }
+        else
+        {
+            instagramLink = "https://www.instagram.com/" + rawInsta.TrimStart('@', '/');
+        }
+    }
+}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @(dinamikSiteAyari?.SiteBasligi ?? "Detay Reklam")</title>
+
+    @if (!string.IsNullOrEmpty(dinamikSiteAyari?.FaviconAdresi))
+    {
+        <link rel="icon" type="image/x-icon" href="@dinamikSiteAyari.FaviconAdresi" />
+    }
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+
+    <style>
+        :root {
+            --nt-bg-dark: #0f131a;
+            --nt-header-bg: #141923;
+            --nt-accent: #FFB703;
+            --nt-accent-hover: #FFA200;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #ffffff;
+            color: #334155;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        main { flex: 1; }
+
+        /* ÜST BİLGİ BANDI */
+        .top-infobar {
+            background-color: #0a0d14;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 0.82rem;
+            padding: 8px 0;
+            position: relative;
+            z-index: 100001;
+        }
+
+        .top-info-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #e2e8f0 !important;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.83rem;
+            transition: all 0.2s ease;
+        }
+
+        .top-info-link:hover {
+            color: var(--nt-accent) !important;
+            transform: translateY(-1px);
+        }
+
+        .top-info-icon-box {
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            background: rgba(255, 183, 3, 0.12);
+            border: 1px solid rgba(255, 183, 3, 0.3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--nt-accent);
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .top-info-divider {
+            width: 1px;
+            height: 15px;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-iban-modal {
+            background: rgba(255, 183, 3, 0.15);
+            border: 1px solid rgba(255, 183, 3, 0.4);
+            color: #ffffff !important;
+            font-size: 0.77rem;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .btn-iban-modal:hover {
+            background: var(--nt-accent);
+            color: #0f131a !important;
+            border-color: var(--nt-accent);
+            box-shadow: 0 4px 14px rgba(255, 183, 3, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-iban-modal:hover i {
+            color: #0f131a !important;
+        }
+
+        /* YAPIŞKAN ANA MENÜ */
+        .navbar-nt {
+            background-color: var(--nt-header-bg) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 10px 0;
+            position: -webkit-sticky !important;
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 99999 !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+        }
+
+        .navbar-brand-nt {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+        }
+
+        .navbar-brand-nt img {
+            height: 56px;
+            max-width: 220px;
+            object-fit: contain;
+            transition: transform 0.2s;
+        }
+
+        .navbar-brand-nt img:hover {
+            transform: scale(1.02);
+        }
+
+        /* Menü Linkleri */
+        .navbar-nav .nav-link {
+            color: #e2e8f0 !important;
+            font-weight: 600;
+            font-size: 0.94rem;
+            margin: 0 6px;
+            padding: 8px 10px !important;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            white-space: nowrap;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            transition: color 0.2s;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: var(--nt-accent) !important;
+            background: transparent !important;
+        }
+
+        /* AÇILIR MENÜ (HİZMETLERİMİZ) */
+        .dropdown-menu-nt {
+            background: #ffffff !important;
+            border-radius: 8px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+            padding: 10px 0;
+            margin-top: 8px;
+            border: 1px solid #e2e8f0;
+            z-index: 100000;
+        }
+
+        .dropdown-menu-nt a {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 10px 18px !important;
+            color: #1e293b !important;
+            text-decoration: none !important;
+            font-size: 0.88rem !important;
+            font-weight: 700 !important;
+            background: #ffffff !important;
+            border: none !important;
+            box-shadow: none !important;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .dropdown-menu-nt a:hover {
+            background-color: #f8fafc !important;
+            color: #d97706 !important;
+        }
+
+        .dropdown-menu-nt a i,
+        .dropdown-menu-nt a .bi {
+            color: #64748b !important;
+            font-size: 11px;
+        }
+
+        @@media (min-width: 1200px) {
+            .nav-item.dropdown-hover {
+                position: relative;
+            }
+            .nav-item.dropdown-hover .dropdown-menu-nt {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                min-width: 240px;
+            }
+            .nav-item.dropdown-hover:hover .dropdown-menu-nt {
+                display: block;
+                animation: fadeInMenu 0.2s ease forwards;
+            }
+        }
+        @@keyframes fadeInMenu {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-teklif-accent {
+            background-color: var(--nt-accent) !important;
+            color: #0f131a !important;
+            font-weight: 800;
+            font-size: 0.85rem;
+            padding: 10px 22px;
+            border-radius: 6px;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+        .btn-teklif-accent:hover {
+            background-color: var(--nt-accent-hover) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 183, 3, 0.4);
+        }
+
+        /* MOBİL MENÜ */
+        .offcanvas-start-drawer {
+            width: 300px !important;
+            background-color: #141923 !important;
+            border-right: 1px solid rgba(255, 183, 3, 0.2) !important;
+            box-shadow: 10px 0 35px rgba(0, 0, 0, 0.6);
+        }
+
+        .drawer-nav-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 13px 18px;
+            color: #f1f5f9 !important;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            background: transparent !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+        }
+        .drawer-nav-link:hover, .drawer-nav-link:focus {
+            color: var(--nt-accent) !important;
+            background-color: rgba(255, 183, 3, 0.06) !important;
+            padding-left: 22px;
+        }
+
+        .drawer-sub-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 18px 10px 32px;
+            color: #94a3b8 !important;
+            font-size: 0.88rem;
+            text-decoration: none;
+            background: transparent !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            transition: color 0.2s;
+        }
+        .drawer-sub-link:hover {
+            color: var(--nt-accent) !important;
+        }
+
+        /* SOL SABİT İLETİŞİM ÇUBUĞU */
+        .sticky-left-bar {
+            position: fixed;
+            left: 0;
+            top: 45%;
+            transform: translateY(-50%);
+            z-index: 1050;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.15);
+        }
+        .sticky-left-bar a {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff !important;
+            font-size: 18px;
+            text-decoration: none;
+            transition: transform 0.2s ease, width 0.2s ease;
+        }
+        .sticky-left-bar a:hover {
+            width: 48px;
+        }
+        .bg-bar-phone { background-color: #0056b3 !important; }
+        .bg-bar-whatsapp { background-color: #25d366 !important; }
+        .bg-bar-mail { background-color: #e83e8c !important; }
+        .bg-bar-instagram { background-color: #d62976 !important; }
+        .bg-bar-facebook { background-color: #1877f2 !important; }
+        .bg-bar-linkedin { background-color: #0a66c2 !important; }
+
+        /* FOOTER */
+        .footer-nt-full {
+            background-color: #0a0d14;
+            color: #94a3b8;
+            padding: 70px 0 25px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .footer-nt-full h5 {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 22px;
+            letter-spacing: 0.5px;
+        }
+        .footer-nt-full a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-nt-full a:hover {
+            color: var(--nt-accent);
+        }
+        .footer-map-box {
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            height: 180px;
+        }
+        .footer-map-box iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .main-footer-brand {
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 25px;
+            margin-top: 35px;
+            font-size: 0.86rem;
+            color: #94a3b8;
+        }
+
+        #btnBackToTop {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--nt-accent);
+            color: #0f131a;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 4px 15px rgba(255, 183, 3, 0.4);
+            z-index: 99999;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+        #btnBackToTop.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        #btnBackToTop:hover {
+            background-color: var(--nt-accent-hover);
+            transform: translateY(-3px);
+        }
+
+        /* ==========================================================================
+           HEDEF ODAKLI VE GÜVENLİ DETAY REKLAM SARI DÜZELTMELERİ
+           ========================================================================== */
+
+        /* Mavi Butonlar */
+        [class*="btn-cyan"],
+        .btn-card-cyan,
+        a.btn-info {
+            background-color: #FFB703 !important;
+            border-color: #FFB703 !important;
+            color: #0b0f19 !important;
+            font-weight: 800 !important;
+            box-shadow: 0 4px 18px rgba(255, 183, 3, 0.35) !important;
+        }
+        [class*="btn-cyan"]:hover,
+        .btn-card-cyan:hover,
+        a.btn-info:hover {
+            background-color: #FFA200 !important;
+            color: #000000 !important;
+        }
+
+        /* Filtre Butonları */
+        .filter-btn.active,
+        .portfolio-filter button.active,
+        .nav-pills .nav-link.active {
+            background-color: #FFB703 !important;
+            border-color: #FFB703 !important;
+            color: #0b0f19 !important;
+            font-weight: 800 !important;
+        }
+
+        /* Slider Okları ve Noktaları */
+        .slick-prev, .slick-next,
+        .owl-prev, .owl-next {
+            color: #FFB703 !important;
+            border-color: rgba(255, 183, 3, 0.4) !important;
+        }
+        .carousel-indicators [data-bs-target].active,
+        .owl-dots .owl-dot.active span,
+        .slick-dots li.slick-active button::before {
+            background-color: #FFB703 !important;
+        }
+
+        /* Tabela Rozetleri */
+        .product-tag,
+        .card .badge.bg-info {
+            background-color: #FFB703 !important;
+            color: #0b0f19 !important;
+            font-weight: 700 !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ÜST BİLGİ BANDI -->
+    <div class="top-infobar">
+        <div class="container-fluid px-lg-5 d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div class="d-flex align-items-center flex-wrap gap-3 gap-md-4">
+                <a href="tel:@telefonLink" class="top-info-link">
+                    <span class="top-info-icon-box">
+                        <i class="bi bi-telephone-fill"></i>
+                    </span>
+                    <span>@telefonMetni</span>
+                </a>
+
+                <div class="top-info-divider d-none d-sm-block"></div>
+
+                <a href="mailto:@mailMetni" class="top-info-link d-none d-sm-inline-flex">
+                    <span class="top-info-icon-box">
+                        <i class="bi bi-envelope-fill"></i>
+                    </span>
+                    <span>@mailMetni</span>
+                </a>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+                <div class="d-none d-lg-flex align-items-center gap-2 text-white-50" style="font-size: 0.82rem;">
+                    <i class="bi bi-clock-fill" style="color: var(--nt-accent);"></i>
+                    <span>Pzt - Cmt: <strong class="text-white">08:30 - 18:30</strong></span>
+                </div>
+
+                <div class="top-info-divider d-none d-lg-block"></div>
+
+                <button type="button" class="btn-iban-modal" data-bs-toggle="modal" data-bs-target="#bankaHesapModal">
+                    <i class="bi bi-credit-card-2-front" style="color: var(--nt-accent);"></i>
+                    <span>Hesap Numaralarımız</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SOL KENAR İLETİŞİM ÇUBUĞU -->
+    <div class="sticky-left-bar d-none d-md-flex">
+        <a href="tel:@telefonLink" class="bg-bar-phone" title="Bizi Arayın"><i class="bi bi-telephone-fill"></i></a>
+        <a href="@whatsappLink" target="_blank" class="bg-bar-whatsapp" title="WhatsApp'tan Yazın"><i class="bi bi-whatsapp"></i></a>
+        <a href="mailto:@mailMetni" class="bg-bar-mail" title="E-Posta Gönderin"><i class="bi bi-envelope-fill"></i></a>
+        <a href="@instagramLink" target="_blank" class="bg-bar-instagram" title="Instagram Sayfamız"><i class="bi bi-instagram"></i></a>
+        @if (!string.IsNullOrEmpty(dinamikSiteAyari?.FacebookAdresi))
+        {
+            <a href="@dinamikSiteAyari.FacebookAdresi" target="_blank" class="bg-bar-facebook" title="Facebook"><i class="bi bi-facebook"></i></a>
+        }
+        @if (!string.IsNullOrEmpty(dinamikSiteAyari?.LinkedInAdresi))
+        {
+            <a href="@dinamikSiteAyari.LinkedInAdresi" target="_blank" class="bg-bar-linkedin" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+        }
+    </div>
+
+    <!-- ÜST MENÜ: 5 BAŞLIK -->
+    <nav class="navbar navbar-expand-xl navbar-nt sticky-top">
+        <div class="container-fluid px-lg-5">
+            <a class="navbar-brand-nt me-4" href="/">
+                @if (!string.IsNullOrEmpty(dinamikSiteAyari?.LogoAdresi))
+                {
+                    <img src="@dinamikSiteAyari.LogoAdresi" alt="@dinamikSiteAyari.SiteBasligi" />
+                }
+                else
+                {
+                    <i class="bi bi-lightning-charge-fill" style="color: var(--nt-accent); font-size: 1.8rem;"></i>
+                    <span class="text-white fw-bold fs-4">@(dinamikSiteAyari?.SiteBasligi ?? "DETAY REKLAM")</span>
+                }
+            </a>
+
+            <!-- MOBİL MENÜ BUTONU -->
+            <button class="navbar-toggler border-0 p-2 text-white d-xl-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileDrawer" aria-controls="mobileDrawer">
+                <i class="bi bi-list fs-2" style="color: var(--nt-accent);"></i>
+            </button>
+
+            <!-- MASAÜSTÜ MENÜ -->
+            <div class="collapse navbar-collapse d-none d-xl-flex" id="navNt">
+                <ul class="navbar-nav mx-auto mb-2 mb-xl-0 align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Anasayfa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Sayfa/hakkimizda">Hakkımızda</a>
+                    </li>
+                    <li class="nav-item dropdown-hover">
+                        <a class="nav-link" href="/#cozumler">
+                            Hizmetlerimiz <i class="bi bi-caret-down-fill ms-1" style="font-size: 10px;"></i>
+                        </a>
+                        <div class="dropdown-menu-nt">
+                            @if (dinamikHizmetler.Any())
+                            {
+                                @foreach (var h in dinamikHizmetler)
+                                {
+                                    <a href="/Hizmet/Detay/@h.Id">@h.Baslik <i class="bi bi-caret-right-fill"></i></a>
+                                }
+                            }
+                            else
+                            {
+                                <a href="/#cozumler">Işıklı Tabela <i class="bi bi-caret-right-fill"></i></a>
+                                <a href="/#cozumler">Kutu Harf Sistemleri <i class="bi bi-caret-right-fill"></i></a>
+                                <a href="/#cozumler">Totem & Pilon <i class="bi bi-caret-right-fill"></i></a>
+                            }
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Proje">Referanslar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Iletisim">İletişim</a>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-center ms-2">
+                    <a href="/Iletisim" class="btn-teklif-accent">TEKLİF ALIN</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MOBİL MENÜ (OFFCANVAS) -->
+    <div class="offcanvas offcanvas-start offcanvas-start-drawer d-xl-none" tabindex="-1" id="mobileDrawer" aria-labelledby="mobileDrawerLabel">
+        <div class="offcanvas-header border-bottom border-secondary border-opacity-25 py-3">
+            <h5 class="offcanvas-title fw-bold text-white d-flex align-items-center gap-2" id="mobileDrawerLabel">
+                <i class="bi bi-lightning-charge-fill" style="color: var(--nt-accent);"></i>
+                <span class="fs-6">@(dinamikSiteAyari?.SiteBasligi ?? "DETAY REKLAM")</span>
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Kapat"></button>
+        </div>
+
+        <div class="offcanvas-body p-0 d-flex flex-column justify-content-between">
+            <div class="drawer-menu-links py-2">
+                <a href="/" class="drawer-nav-link">
+                    <span>Anasayfa</span>
+                    <i class="bi bi-chevron-right small text-white-50"></i>
+                </a>
+                <a href="/Sayfa/hakkimizda" class="drawer-nav-link">
+                    <span>Hakkımızda</span>
+                    <i class="bi bi-chevron-right small text-white-50"></i>
+                </a>
+                <a class="drawer-nav-link" data-bs-toggle="collapse" href="#drawerHizmetler" role="button" aria-expanded="false">
+                    <span>Hizmetlerimiz</span>
+                    <i class="bi bi-chevron-down small text-white-50"></i>
+                </a>
+                <div class="collapse bg-black bg-opacity-25" id="drawerHizmetler">
+                    @if (dinamikHizmetler.Any())
+                    {
+                        @foreach (var h in dinamikHizmetler)
+                        {
+                            <a href="/Hizmet/Detay/@h.Id" class="drawer-sub-link">
+                                <span>@h.Baslik</span>
+                                <i class="bi bi-arrow-right-short"></i>
+                            </a>
+                        }
+                    }
+                    else
+                    {
+                        <a href="/#cozumler" class="drawer-sub-link"><span>Işıklı Tabela</span><i class="bi bi-arrow-right-short"></i></a>
+                        <a href="/#cozumler" class="drawer-sub-link"><span>Kutu Harf</span><i class="bi bi-arrow-right-short"></i></a>
+                    }
+                </div>
+                <a href="/Proje" class="drawer-nav-link">
+                    <span>Referanslar</span>
+                    <i class="bi bi-chevron-right small text-white-50"></i>
+                </a>
+                <a href="/Iletisim" class="drawer-nav-link">
+                    <span>İletişim</span>
+                    <i class="bi bi-chevron-right small text-white-50"></i>
+                </a>
+            </div>
+
+            <div class="p-4 border-top border-secondary border-opacity-25">
+                <a href="/Iletisim" class="btn btn-teklif-accent w-100 py-3 mb-3 fw-bold text-center d-block">
+                    TEKLİF ALIN
+                </a>
+                <div class="d-flex justify-content-center gap-3 pt-2">
+                    <a href="tel:@telefonLink" class="text-white fs-5"><i class="bi bi-telephone-fill"></i></a>
+                    <a href="@whatsappLink" target="_blank" class="text-success fs-5"><i class="bi bi-whatsapp"></i></a>
+                    <a href="mailto:@mailMetni" class="text-warning fs-5"><i class="bi bi-envelope-fill"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SAYFA İÇERİĞİ -->
+    <main>
+        @RenderBody()
+    </main>
+
+    <!-- HESAP NUMARALARI MODAL -->
+    <div class="modal fade" id="bankaHesapModal" tabindex="-1" aria-labelledby="bankaHesapModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-3 shadow">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold" id="bankaHesapModalLabel">Banka Hesap Bilgilerimiz</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                </div>
+                <div class="modal-body py-4">
+                    <p class="small text-muted mb-3">Ödemelerinizi ve havalelerinizi aşağıdaki şirket hesaplarımıza gerçekleştirebilirsiniz.</p>
+
+                    <div class="p-3 mb-3 bg-light rounded border">
+                        <div class="fw-bold text-dark mb-1">Ziraat Bankası</div>
+                        <div class="small text-secondary mb-1"><strong>Alıcı:</strong> @(dinamikSiteAyari?.SiteBasligi ?? "Detay Reklam")</div>
+                        <div class="small font-monospace text-primary fw-bold">TR00 0001 0000 0000 0000 0000 01</div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Kapat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer-nt-full">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <h5>HIZLI MENÜ</h5>
+                    <ul class="list-unstyled small d-flex flex-column gap-2">
+                        <li><a href="/">Anasayfa</a></li>
+                        <li><a href="/Sayfa/hakkimizda">Hakkımızda</a></li>
+                        <li><a href="/#cozumler">Hizmetlerimiz</a></li>
+                        <li><a href="/Proje">Referanslar</a></li>
+                        <li><a href="/Iletisim">İletişim</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h5>HİZMETLERİMİZ</h5>
+                    <ul class="list-unstyled small d-flex flex-column gap-2">
+                        @if (dinamikHizmetler.Any())
+                        {
+                            @foreach (var h in dinamikHizmetler.Take(5))
+                            {
+                                <li><a href="/Hizmet/Detay/@h.Id">@h.Baslik</a></li>
+                            }
+                        }
+                        else
+                        {
+                            <li><a href="/#cozumler">Işıklı Tabela Sistemleri</a></li>
+                            <li><a href="/#cozumler">Kutu Harf İmalatı</a></li>
+                            <li><a href="/#cozumler">Totem ve Pilon Tabela</a></li>
+                        }
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h5>İLETİŞİM</h5>
+                    <div class="small d-flex flex-column gap-3">
+                        <div class="d-flex gap-3">
+                            <i class="bi bi-geo-alt-fill fs-5" style="color: var(--nt-accent);"></i>
+                            <div>
+                                <strong class="text-white d-block">Adres</strong>
+                                <span>@(dinamikSiteAyari?.Adres ?? "Sanayi Sitesi, Reklamcılar Caddesi")</span>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-3">
+                            <i class="bi bi-telephone-fill fs-5" style="color: var(--nt-accent);"></i>
+                            <div>
+                                <strong class="text-white d-block">Telefon</strong>
+                                <span>@telefonMetni</span>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-3">
+                            <i class="bi bi-envelope-fill fs-5" style="color: var(--nt-accent);"></i>
+                            <div>
+                                <strong class="text-white d-block">E-Posta</strong>
+                                <span>@mailMetni</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h5>KONUM</h5>
+                    <div class="footer-map-box">
+                        <iframe
+                            src="https://maps.google.com/maps?q=@(Uri.EscapeDataString(dinamikSiteAyari?.Adres ?? "Turkey"))&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                            loading="lazy"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ALT TELİF & MARKA BİLGİSİ -->
+            <div class="main-footer-brand text-center pt-4 mt-4 border-top border-secondary border-opacity-25">
+                <div class="row m-0">
+                    <div class="col-12" style="font-size: 0.95rem; color: #94a3b8; font-weight: 400; letter-spacing: 0.2px;">
+                        Copyright &copy; @DateTime.Now.Year
+                        <a href="https://www.hayatisleri.com.tr/" target="_blank" rel="noopener noreferrer" style="color: #6366f1; text-decoration: none; font-weight: 500;">Hayat İşleri</a> İşletme Yönetimi.
+                        bir <span style="color: #ef4444; font-size: 1.1rem; vertical-align: middle; margin: 0 2px;">&#10084;</span> by
+                        <a href="https://www.hayatisleri.com.tr/" target="_blank" rel="noopener noreferrer" style="color: #6366f1; text-decoration: none; font-weight: 500;">Hayat İşleri İşletme Çözümleri Markasıdır</a> Tüm Hakları Saklıdır.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- YUKARI ÇIK BUTONU -->
+    <button type="button" id="btnBackToTop" title="Yukarı Çık">
+        <i class="bi bi-chevron-up"></i>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const backToTopBtn = document.getElementById('btnBackToTop');
+
+        window.addEventListener('scroll', function () {
+            if (window.scrollY > 250) {
+                backToTopBtn.classList.add('show');
+            } else {
+                backToTopBtn.classList.remove('show');
+            }
+        });
+
+        backToTopBtn.addEventListener('click', function () {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

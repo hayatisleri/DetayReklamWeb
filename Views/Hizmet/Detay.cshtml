@@ -1,0 +1,131 @@
+@model KurumsalWebSitesi.Models.Entities.Hizmet
+@{
+    ViewData["Title"] = Model.Baslik;
+    var ilgiliUrunler = ViewBag.IlgiliUrunler as IEnumerable<dynamic>;
+}
+
+<style>
+    .hizmet-detay-wrapper {
+        padding: 60px 0 90px 0;
+        background-color: #ffffff;
+    }
+    .hizmet-main-title {
+        font-size: 2.4rem;
+        font-weight: 800;
+        color: #0284c7;
+        line-height: 1.25;
+        margin-bottom: 25px;
+    }
+    .hizmet-description {
+        color: #475569;
+        font-size: 1.02rem;
+        line-height: 1.85;
+    }
+    .hizmet-image-container {
+        position: relative;
+    }
+    .hizmet-image-box {
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+    }
+    .hizmet-image-box img {
+        width: 100%;
+        height: 380px;
+        object-fit: cover;
+        display: block;
+    }
+    .hizmet-floating-card {
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 24px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        border: 1px solid #e2e8f0;
+        margin-top: -45px;
+        position: relative;
+        z-index: 2;
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .btn-urunlere-git {
+        background-color: #0284c7;
+        color: #ffffff !important;
+        font-weight: 700;
+        font-size: 0.9rem;
+        padding: 12px 26px;
+        border-radius: 6px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+    }
+    .btn-urunlere-git:hover {
+        background-color: #0369a1;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+    }
+</style>
+
+<section class="hizmet-detay-wrapper">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <!-- SOL ALAN: BAŞLIK, AÇIKLAMA VE ÜRÜNLERE GİT BUTONU -->
+            <div class="col-lg-6">
+                <h1 class="hizmet-main-title">@Model.Baslik</h1>
+
+                <div class="hizmet-description mb-4">
+                    @if (!string.IsNullOrEmpty(Model.Icerik))
+                    {
+                        @Html.Raw(Model.Icerik)
+                    }
+                    else
+                    {
+                        <p>İşletmenize özel yüksek standartlarda kurumsal çözümler, tasarım ve imalat hizmetleri sunuyoruz.</p>
+                    }
+                </div>
+
+                <div class="pt-2">
+                    <a href="/Urun" class="btn-urunlere-git">
+                        <i class="bi bi-box-seam me-1"></i> Ürünlere Git
+                    </a>
+                </div>
+            </div>
+
+            <!-- SAĞ ALAN: GÖRSEL VE KARTÇIK -->
+            <div class="col-lg-6">
+                <div class="hizmet-image-container">
+                    <div class="hizmet-image-box">
+                        @if (!string.IsNullOrEmpty(Model.ResimAdresi))
+                        {
+                            <img src="@Model.ResimAdresi" alt="@Model.Baslik" />
+                        }
+                        else
+                        {
+                            <img src="https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=900&q=80" alt="@Model.Baslik" />
+                        }
+                    </div>
+
+                    <!-- Resmin altındaki özet kart -->
+                    <div class="hizmet-floating-card">
+                        <h5 class="fw-bold text-dark mb-2">@Model.Baslik Çözümlerimiz</h5>
+                        <div style="width: 38px; height: 3px; background-color: #0284c7; margin-bottom: 12px;"></div>
+                        <p class="small text-secondary mb-0">
+                            Yüksek hassasiyet ve dayanıklı malzemelerle hazırlanan profesyonel kurumsal imalat çözümleri.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- İLGİLİ ÜRÜNLER YÖNLENDİRMESİ -->
+        <div class="mt-5 pt-5 border-top text-center">
+            <h3 class="fw-bold text-dark mb-3">Bu Çözüme Ait İmalat ve Ürünlerimizi Gördünüz mü?</h3>
+            <p class="text-muted mb-4">Özel ölçü, malzeme seçenekleri ve portföyümüzü ürünler sayfamızdan detaylıca inceleyebilirsiniz.</p>
+            <a href="/Urun" class="btn btn-outline-primary px-4 py-2 fw-semibold">
+                Tüm Ürün Portföyüne Göz At &rarr;
+            </a>
+        </div>
+    </div>
+</section>

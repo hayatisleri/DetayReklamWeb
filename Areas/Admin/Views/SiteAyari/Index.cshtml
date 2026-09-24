@@ -1,0 +1,150 @@
+﻿@model KurumsalWebSitesi.Models.Entities.SiteAyari
+
+@{
+    ViewData["Title"] = "Site Ayarları";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h4 mb-0 text-gray-800">Site Genel Ayarları</h2>
+    <a href="/Admin/SiteAyari/Duzenle/@Model.Id" class="btn btn-primary"><i class="fa-solid fa-pen-to-square me-1"></i> Ayarları Düzenle</a>
+</div>
+
+@if (TempData["Mesaj"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fa-solid fa-check-circle me-1"></i> @TempData["Mesaj"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="row">
+    <!-- Sol Sütun: SEO, Temel Ayarlar, Görseller ve API -->
+    <div class="col-md-6">
+        <div class="card mb-4 shadow-sm border-0">
+            <div class="card-header bg-white fw-bold">
+                <i class="fa-solid fa-globe text-primary me-1"></i> Genel Bilgiler & Kurumsal Kimlik
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4 text-muted">Site Başlığı</dt>
+                    <dd class="col-sm-8 fw-medium">@Model.SiteBasligi</dd>
+
+                    <dt class="col-sm-4 text-muted">Site Açıklaması</dt>
+                    <dd class="col-sm-8">@(string.IsNullOrEmpty(Model.SiteAciklamasi) ? "-" : Model.SiteAciklamasi)</dd>
+
+                    <dt class="col-sm-4 text-muted">Son Güncelleme</dt>
+                    <dd class="col-sm-8">@Model.GuncellenmeTarihi.ToString("dd.MM.yyyy HH:mm")</dd>
+                </dl>
+
+                <hr class="my-3" />
+
+                <div class="row align-items-center text-center">
+                    <div class="col-6 border-end">
+                        <span class="d-block text-muted mb-2 fw-bold" style="font-size:0.85rem;">Mevcut Logo</span>
+                        @if (!string.IsNullOrEmpty(Model.LogoAdresi))
+                        {
+                            <img src="@Model.LogoAdresi" class="img-fluid border p-1 rounded" style="max-height: 60px;" alt="Logo" />
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Yüklenmemiş</span>
+                        }
+                    </div>
+                    <div class="col-6">
+                        <span class="d-block text-muted mb-2 fw-bold" style="font-size:0.85rem;">Mevcut Favicon</span>
+                        @if (!string.IsNullOrEmpty(Model.FaviconAdresi))
+                        {
+                            <img src="@Model.FaviconAdresi" class="img-fluid border p-1 rounded" style="max-height: 32px;" alt="Favicon" />
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Yüklenmemiş</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4 shadow-sm border-0">
+            <div class="card-header bg-white fw-bold">
+                <i class="fa-solid fa-chart-pie text-success me-1"></i> API ve İstatistik Durumu
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4 text-muted">Google Analytics 4</dt>
+                    <dd class="col-sm-8 text-truncate">@(string.IsNullOrEmpty(Model.GoogleAnalyticsId) ? "Yapılandırılmadı" : Model.GoogleAnalyticsId)</dd>
+
+                    <dt class="col-sm-4 text-muted">Search Console Mülkü</dt>
+                    <dd class="col-sm-8 text-truncate">@(string.IsNullOrEmpty(Model.GscPropertyUrl) ? "Yapılandırılmadı" : Model.GscPropertyUrl)</dd>
+
+                    <dt class="col-sm-4 text-muted">API JSON Dosyası</dt>
+                    <dd class="col-sm-8 text-truncate">@(string.IsNullOrEmpty(Model.GscServiceAccountJsonPath) ? "Eksik" : "Tanımlandı")</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sağ Sütun: İletişim, Sosyal Medya ve Yönetici Hesap -->
+    <div class="col-md-6">
+        <div class="card mb-4 shadow-sm border-0">
+            <div class="card-header bg-white fw-bold">
+                <i class="fa-solid fa-address-book text-primary me-1"></i> İletişim & Sosyal Medya
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4 text-muted">Telefon</dt>
+                    <dd class="col-sm-8">@(string.IsNullOrEmpty(Model.TelefonNumarasi) ? "-" : Model.TelefonNumarasi)</dd>
+                    <div class="d-flex justify-content-between py-1 border-bottom">
+    <span class="text-muted"><i class="bi bi-whatsapp text-success me-1"></i> WhatsApp:</span>
+    <span class="fw-semibold">@(Model?.WhatsappNumarasi ?? "-")</span>
+</div>
+
+                    <dt class="col-sm-4 text-muted">E-Posta</dt>
+                    <dd class="col-sm-8">@(string.IsNullOrEmpty(Model.EpostaAdresi) ? "-" : Model.EpostaAdresi)</dd>
+
+                    <dt class="col-sm-4 text-muted">Adres</dt>
+                    <dd class="col-sm-8">@(string.IsNullOrEmpty(Model.Adres) ? "-" : Model.Adres)</dd>
+                </dl>
+
+                <hr class="my-3" />
+
+                <dl class="row mb-0">
+                    <dt class="col-sm-4 text-muted"><i class="fa-brands fa-facebook text-primary"></i> Facebook</dt>
+                    <dd class="col-sm-8 text-truncate">@(string.IsNullOrEmpty(Model.FacebookAdresi) ? "-" : Model.FacebookAdresi)</dd>
+
+                    <dt class="col-sm-4 text-muted"><i class="fa-brands fa-instagram text-danger"></i> Instagram</dt>
+                    <dd class="col-sm-8 text-truncate">@(string.IsNullOrEmpty(Model.InstagramAdresi) ? "-" : Model.InstagramAdresi)</dd>
+
+                    <dt class="col-sm-4 text-muted"><i class="fa-brands fa-linkedin text-info"></i> LinkedIn</dt>
+                    <dd class="col-sm-8 text-truncate">@(string.IsNullOrEmpty(Model.LinkedInAdresi) ? "-" : Model.LinkedInAdresi)</dd>
+                </dl>
+            </div>
+        </div>
+
+        <!-- YÖNETİCİ HESAP AYARLARI -->
+        <div class="card shadow-sm border-0 mt-4 p-4">
+            <div class="card-header bg-white border-0 px-0">
+                <h5 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-user-lock me-2 text-primary"></i> Yönetici Giriş Bilgileri</h5>
+                <small class="text-muted">Hesap bilgilerinizi buradan güncelleyebilirsiniz.</small>
+            </div>
+            <div class="card-body px-0">
+                <form action="/Admin/SiteAyari/SifreGuncelle" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="fw-bold mb-1">Kullanıcı Adı</label>
+                            <input type="text" name="yeniKullaniciAdi" class="form-control" value="@User.Identity.Name" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="fw-bold mb-1">Yeni Şifre</label>
+                            <input type="password" name="yeniSifre" class="form-control" placeholder="Değiştirmek istemiyorsanız boş bırakın" />
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-warning px-4 mt-2">
+                        <i class="fa-solid fa-save me-1"></i> Bilgileri Güncelle
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

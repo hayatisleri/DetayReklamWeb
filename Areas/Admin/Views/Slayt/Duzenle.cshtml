@@ -1,0 +1,72 @@
+﻿@model KurumsalWebSitesi.Models.Entities.Slayt
+
+@{
+    ViewData["Title"] = "Slayt Düzenle";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h4 mb-0 text-gray-800">Slayt Düzenle</h2>
+    <a href="/Admin/Slayt/Index" class="btn btn-secondary"><i class="fa-solid fa-arrow-left me-1"></i> Geri Dön</a>
+</div>
+
+<form action="/Admin/Slayt/Duzenle" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <input type="hidden" name="ResimAdresi" value="@Model.ResimAdresi" />
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4 shadow-sm border-0">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="Baslik" class="form-label fw-bold">Ana Başlık</label>
+                        <input type="text" class="form-control" id="Baslik" name="Baslik" value="@Model.Baslik">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="AltBaslik" class="form-label fw-bold">Alt Başlık</label>
+                        <input type="text" class="form-control" id="AltBaslik" name="AltBaslik" value="@Model.AltBaslik">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="LinkAdresi" class="form-label fw-bold">Yönlendirme Linki (URL)</label>
+                        <input type="text" class="form-control" id="LinkAdresi" name="LinkAdresi" value="@Model.LinkAdresi">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm border-0">
+                <div class="card-body text-center mb-3">
+                    <label class="form-label fw-bold d-block text-start">Mevcut Görsel</label>
+                    @if (!string.IsNullOrEmpty(Model.ResimAdresi))
+                    {
+                        <img src="@Model.ResimAdresi" class="img-fluid img-thumbnail rounded mb-2" alt="Mevcut Görsel" style="max-height: 150px;">
+                    }
+                </div>
+
+                <div class="card-body border-top pt-3">
+                    <div class="mb-4">
+                        <label for="resimDosyasi" class="form-label fw-bold">Görseli Değiştir</label>
+                        <input type="file" class="form-control" id="resimDosyasi" name="resimDosyasi" accept="image/jpeg, image/png, image/webp">
+                        <small class="text-muted">Mevcut görseli değiştirmek istemiyorsanız burayı boş bırakın.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Sira" class="form-label fw-bold">Gösterim Sırası</label>
+                        <input type="number" class="form-control" id="Sira" name="Sira" value="@Model.Sira">
+                    </div>
+
+                    <div class="mb-4 form-check form-switch mt-3">
+                        <input class="form-check-input" type="checkbox" role="switch" id="AktifMi" name="AktifMi" value="true" @(Model.AktifMi ? "checked" : "")>
+                        <label class="form-check-label fw-bold" for="AktifMi">Slayt Aktif Olsun Mu?</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2"><i class="fa-solid fa-floppy-disk me-1"></i> Değişiklikleri Kaydet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

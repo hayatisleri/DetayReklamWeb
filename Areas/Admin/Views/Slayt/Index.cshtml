@@ -1,0 +1,156 @@
+﻿@model IEnumerable<KurumsalWebSitesi.Models.Entities.Slayt>
+
+@{
+    ViewData["Title"] = "Slayt Yönetimi";
+}
+
+<style>
+    /* Kurumsal Renkler */
+    .table-corporate thead th {
+        background-color: #1A2530 !important;
+        color: #ffffff !important;
+        font-weight: 500;
+        border-bottom: none;
+    }
+
+    .btn-corporate {
+        background-color: #3498DB;
+        color: #fff;
+        border: none;
+    }
+
+        .btn-corporate:hover {
+            background-color: #2980B9;
+            color: #fff;
+        }
+
+    /* Mobil Kart Tasarımı */
+    .mobile-card {
+        background: #fff;
+        border: 1px solid #e3e6f0;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .mobile-card-header {
+        background-color: #F4F6F9;
+        border-bottom: 1px solid #e3e6f0;
+        padding: 12px 15px;
+        font-weight: bold;
+        color: #1A2530;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .mobile-card-body {
+        padding: 15px;
+    }
+
+    .mobile-card-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        border-bottom: 1px dashed #e3e6f0;
+        padding-bottom: 8px;
+    }
+
+    .mobile-card-label {
+        color: #6c757d;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .mobile-card-value {
+        font-size: 0.9rem;
+        color: #333;
+        text-align: right;
+    }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h4 mb-0" style="color: #1A2530; font-weight: 600;">Slaytlar (Banner)</h2>
+    <a href="/Admin/Slayt/Ekle" class="btn btn-corporate shadow-sm"><i class="fa-solid fa-plus me-1"></i> Yeni Slayt Ekle</a>
+</div>
+
+<!-- MASAÜSTÜ GÖRÜNÜMÜ -->
+<div class="d-none d-md-block table-responsive shadow-sm rounded">
+    <table class="table table-hover align-middle mb-0 table-corporate">
+        <thead>
+            <tr>
+                <th class="text-center py-3">Görsel</th>
+                <th class="py-3 px-4">Başlık</th>
+                <th class="text-center py-3">Sıra</th>
+                <th class="text-center py-3">Durum</th>
+                <th class="text-end py-3 px-4">İşlemler</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-center px-4">
+                            @if (!string.IsNullOrEmpty(item.ResimAdresi))
+                            {
+                                <img src="@item.ResimAdresi" alt="Slayt" class="img-thumbnail rounded" style="width: 120px; height: 60px; object-fit: cover;" />
+                            }
+                        </td>
+                        <td class="fw-medium px-4">
+                            @item.Baslik
+                            <br /><small class="text-muted">@item.AltBaslik</small>
+                        </td>
+                        <td class="text-center">@item.Sira</td>
+                        <td class="text-center">
+                            @(item.AktifMi ? Html.Raw("<span class='badge' style='background-color: #2ecc71;'>Aktif</span>") : Html.Raw("<span class='badge' style='background-color: #e74c3c;'>Pasif</span>"))
+                        </td>
+                        <td class="text-end px-4">
+                            <a href="/Admin/Slayt/Duzenle/@item.Id" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-pen-to-square"></i></a>
+                            <form action="/Admin/Slayt/Sil" method="post" class="d-inline" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- MOBİL GÖRÜNÜM -->
+<div class="d-block d-md-none">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var item in Model)
+        {
+            <div class="mobile-card">
+                <div class="mobile-card-header">
+                    <span>@item.Baslik</span>
+                    @(item.AktifMi ? Html.Raw("<span class='badge' style='background-color: #2ecc71;'>Aktif</span>") : Html.Raw("<span class='badge' style='background-color: #e74c3c;'>Pasif</span>"))
+                </div>
+                <div class="mobile-card-body">
+                    <div class="mobile-card-row">
+                        @if (!string.IsNullOrEmpty(item.ResimAdresi))
+                        {
+                            <img src="@item.ResimAdresi" alt="Slayt" class="img-thumbnail rounded" style="width: 120px; height: 60px; object-fit: cover;" />
+                        }
+                        <span class="mobile-card-label">Sıra</span>
+                        <span class="mobile-card-value">@item.Sira</span>
+                    </div>
+                    <div class="mt-3 d-flex gap-2">
+                        <a href="/Admin/Slayt/Duzenle/@item.Id" class="btn btn-sm btn-outline-primary flex-grow-1"><i class="fa-solid fa-pen-to-square"></i> Düzenle</a>
+                        <form action="/Admin/Slayt/Sil" method="post" class="flex-grow-1 d-flex" onsubmit="return confirm('Silmek istediğinize emin misiniz?');">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger w-100"><i class="fa-solid fa-trash"></i> Sil</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>

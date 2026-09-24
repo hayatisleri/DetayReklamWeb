@@ -1,0 +1,67 @@
+﻿@model IEnumerable<KurumsalWebSitesi.Models.Entities.IsBasvurusu>
+@{
+    ViewData["Title"] = "İş Başvuruları";
+}
+
+<style>
+    .table-corporate thead th {
+        background-color: #1A2530 !important;
+        color: #ffffff !important;
+    }
+
+    .mobile-card {
+        background: #fff;
+        border: 1px solid #e3e6f0;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        padding: 15px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+</style>
+
+<h2 class="h4 mb-4 fw-bold text-dark">Gelen İş Başvuruları</h2>
+
+<!-- MASAÜSTÜ TABLO -->
+<div class="d-none d-md-block shadow-sm rounded">
+    <table class="table table-hover align-middle bg-white table-corporate">
+        <thead><tr><th>Tarih</th><th>Ad Soyad</th><th>Pozisyon</th><th>CV</th><th class="text-end">İşlem</th></tr></thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.BasvuruTarihi.ToString("dd.MM.yyyy")</td>
+                    <td class="fw-medium">@item.AdSoyad</td>
+                    <td>@item.Pozisyon</td>
+                    <td><a href="@item.CvDosyaYolu" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa-solid fa-download"></i> İndir</a></td>
+                    <td class="text-end">
+                        <form action="/Admin/IsBasvurusu/Sil" method="post" onsubmit="return confirm('Silinsin mi?');">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- MOBİL KART -->
+<div class="d-md-none">
+    @foreach (var item in Model)
+    {
+        <div class="mobile-card">
+            <div class="d-flex justify-content-between mb-2">
+                <strong>@item.AdSoyad</strong>
+                <span class="text-muted small">@item.BasvuruTarihi.ToString("dd.MM")</span>
+            </div>
+            <div class="small mb-3">Pozisyon: <strong>@item.Pozisyon</strong></div>
+            <div class="d-flex gap-2">
+                <a href="@item.CvDosyaYolu" target="_blank" class="btn btn-sm btn-info text-white flex-grow-1">İndir</a>
+                <form action="/Admin/IsBasvurusu/Sil" method="post" class="flex-grow-1" onsubmit="return confirm('Silinsin mi?');">
+                    <input type="hidden" name="id" value="@item.Id" />
+                    <button class="btn btn-sm btn-outline-danger w-100">Sil</button>
+                </form>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,134 @@
+@model List<KurumsalWebSitesi.Models.Entities.Hizmet>
+
+<section class="hizmetler-split-section py-5" id="cozumler">
+    <div class="container py-4">
+        <!-- Başlık -->
+        <div class="text-center mb-5">
+            <span class="badge badge-neon px-3 py-2 rounded-pill fw-semibold mb-2">HİZMETLERİMİZ</span>
+            <h2 class="fw-bold display-6 text-white">Sektörünüze ve İşletmenize Özel Çözümler</h2>
+            <p class="text-white-50">İşletmenizin ihtiyaçlarına özel, modern ve dinamik kurumsal çözümler.</p>
+        </div>
+
+        <!-- 1. BÖLÜM: IŞIKLI KUTU HARF (SOL YAZI - SAĞ VİDEO) -->
+        <div class="row align-items-center g-5 mb-5">
+            <div class="col-lg-6">
+                <div class="pe-lg-4">
+                    <span class="text-neon-cyan fw-bold text-uppercase small tracking-wide">Öne Çıkan Çözüm</span>
+                    <h3 class="fw-extrabold display-6 text-white mt-2 mb-3">Işıklı Kutu Harf</h3>
+                    <p class="text-light-muted fs-5 lh-base mb-4">
+                        İşletmenizin görünürlüğünü en üst seviyeye çıkaran, gece ve gündüz fark edilen kaliteli led aydınlatmalı modern tabela çözümleri.
+                    </p>
+                    <a href="/Hizmet/Detay/1" class="btn btn-neon rounded-pill px-4 py-3 fw-bold d-inline-flex align-items-center gap-2">
+                        <span>DETAYLI İNCELEYİN</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="hizmet-media-box rounded-4 overflow-hidden position-relative">
+                    <video autoplay muted loop playsinline class="w-100 h-100 object-fit-cover">
+                        <source src="/videos/isikli.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. BÖLÜM: IŞIKSIZ KUTU HARF (SAĞ YAZI - SOL VİDEO / ZİGZAG) -->
+        <div class="row align-items-center g-5 mb-5 flex-lg-row-reverse">
+            <div class="col-lg-6">
+                <div class="ps-lg-4">
+                    <span class="text-neon-cyan fw-bold text-uppercase small tracking-wide">Kurumsal Tasarım</span>
+                    <h3 class="fw-extrabold display-6 text-white mt-2 mb-3">Işıksız Kutu Harf</h3>
+                    <p class="text-light-muted fs-5 lh-base mb-4">
+                        İç ve dış mekanlara sade, şık ve prestijli bir hava katan; paslanmaz çelik, alüminyum ve pleksi kabartma harf sistemleri.
+                    </p>
+                    <a href="/Hizmet/Detay/2" class="btn btn-neon rounded-pill px-4 py-3 fw-bold d-inline-flex align-items-center gap-2">
+                        <span>DETAYLI İNCELEYİN</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="hizmet-media-box rounded-4 overflow-hidden position-relative">
+                    <video autoplay muted loop playsinline class="w-100 h-100 object-fit-cover">
+                        <source src="/videos/isiksiz.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<style>
+   /* YENİ VE BİREBİR AYNI RENK */
+    .hizmetler-split-section {
+        background: #141923 !important;
+        background-color: #141923 !important;
+        position: relative;
+        border-top: none !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    }
+
+    .fw-extrabold {
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
+
+    .tracking-wide {
+        letter-spacing: 1.5px;
+    }
+
+    /* Mavi Yazıları Kurumsal Sarıya Çevir */
+    .text-neon-cyan {
+        color: #FFB703 !important;
+    }
+
+    .text-light-muted {
+        color: #cbd5e1 !important;
+    }
+
+    /* Hizmetlerimiz Hap Rozeti */
+    .badge-neon {
+        background: rgba(255, 183, 3, 0.12) !important;
+        color: #FFB703 !important;
+        border: 1px solid rgba(255, 183, 3, 0.35) !important;
+    }
+
+    /* DETAYLI İNCELEYİN Butonu (Detay Reklam Sarısı) */
+    .btn-neon {
+        background: #FFB703 !important;
+        color: #0f131a !important;
+        box-shadow: 0 4px 18px rgba(255, 183, 3, 0.35) !important;
+        transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+    }
+
+    .btn-neon:hover {
+        transform: translateY(-3px);
+        background-color: #FFA200 !important;
+        box-shadow: 0 6px 24px rgba(255, 183, 3, 0.55) !important;
+        color: #000000 !important;
+    }
+
+    /* Video Çerçeveleri */
+    .hizmet-media-box {
+        height: 380px;
+        background: #0b0f19;
+        border: 1px solid rgba(255, 183, 3, 0.25) !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+        transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+    }
+
+    .hizmet-media-box:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 10px 35px rgba(255, 183, 3, 0.25) !important;
+        border-color: rgba(255, 183, 3, 0.5) !important;
+    }
+
+    .hizmet-media-box video {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        display: block;
+    }
+</style>

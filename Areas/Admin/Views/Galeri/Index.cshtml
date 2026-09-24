@@ -1,0 +1,57 @@
+﻿@model IEnumerable<KurumsalWebSitesi.Models.Entities.Galeri>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Fotoğraf Galerisi";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold mb-1">Fotoğraf Galerisi</h2>
+        <p class="text-muted mb-0">Web sitesinde Fotoğraf Galerisi sayfasında sergilenecek görselleri yönetin.</p>
+    </div>
+    <a href="/Admin/Galeri/Ekle" class="btn btn-primary">
+        <i class="fa-solid fa-plus me-1"></i> Yeni Fotoğraf Ekle
+    </a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle bg-white rounded shadow-sm">
+        <thead class="table-light">
+            <tr>
+                <th style="width: 100px;">Görsel</th>
+                <th>Başlık / Açıklama</th>
+                <th>Dosya Yolu</th>
+                <th style="width: 100px;">şlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <img src="@item.ResimAdresi" class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;" alt="@item.Baslik" />
+                        </td>
+                        <td class="fw-medium">@item.Baslik</td>
+                        <td class="text-muted small">@item.ResimAdresi</td>
+                        <td>
+                            <form action="/Admin/Galeri/Sil/@item.Id" method="post" onsubmit="return confirm('Bu fotoğrafı silmek istediğinize emin misiniz?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    <i class="fa-solid fa-trash me-1"></i> Sil
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" class="text-center py-4 text-muted">Henüz galeriye eklenmiş bir fotoğraf bulunmuyor.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

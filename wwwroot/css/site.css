@@ -1,0 +1,270 @@
+html {
+  font-size: 14px;
+  position: relative;
+  min-height: 100%;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+/* Ana tema rengini ve vurguları altın sarısı yap */
+:root {
+    --primary-color: #FFB703 !important; /* Altın sarısı */
+    --accent-color: #FFB703 !important;
+}
+
+/* "Çözümler" yazısı ve sarı butonlar için */
+.text-primary, .highlight, .banner-title span {
+    color: #FFB703 !important;
+}
+
+.btn-primary, .btn-warning {
+    background-color: #FFB703 !important;
+    border-color: #FFB703 !important;
+    color: #000 !important; /* Yazısı siyah olsun ki sarı üstünde okunsun */
+    font-weight: bold;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: #ffffff;
+    color: #334155;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+main { flex: 1; }
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+/* YAPIŞKAN (STICKY) MENÜ */
+.navbar-nt {
+    background-color: #090e24 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 14px 0;
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 99999 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.navbar-brand-nt {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #ffffff !important;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+.navbar-brand-nt i { color: var(--nt-cyan); }
+
+.navbar-nav .nav-link {
+    color: #cbd5e1 !important;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin: 0 4px;
+    padding: 8px 6px !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.navbar-nav .nav-link:hover { color: var(--nt-cyan) !important; }
+
+/* AÇILIR MENÜ (DROPDOWN) */
+.nav-item.dropdown-hover {
+    position: relative;
+}
+.nav-item.dropdown-hover .dropdown-menu-nt {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 240px;
+    background: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+    padding: 10px 0;
+    margin-top: 8px;
+    border: none;
+    z-index: 100000;
+}
+.nav-item.dropdown-hover .dropdown-menu-nt::before {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: 0;
+    width: 100%;
+    height: 8px;
+}
+.nav-item.dropdown-hover:hover .dropdown-menu-nt {
+    display: block;
+    animation: fadeInMenu 0.2s ease forwards;
+}
+@keyframes fadeInMenu {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-menu-nt a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 18px;
+    color: #1e293b;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    transition: background 0.15s, color 0.15s;
+}
+.dropdown-menu-nt a:hover {
+    background-color: #f8fafc;
+    color: #0284c7;
+}
+.dropdown-menu-nt a i {
+    font-size: 10px;
+    color: #94a3b8;
+}
+.dropdown-menu-nt a:hover i {
+    color: #0284c7;
+}
+
+.header-phone-box {
+    white-space: nowrap;
+    line-height: 1.2;
+}
+.header-phone-box a {
+    font-size: 0.95rem;
+    letter-spacing: -0.2px;
+}
+.btn-teklif-cyan {
+    background-color: var(--nt-cyan);
+    color: #04101e !important;
+    font-weight: 800;
+    font-size: 0.8rem;
+    padding: 9px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+/* SOL DİKEY ÇUBUK */
+.sticky-left-bar {
+    position: fixed;
+    left: 0;
+    top: 40%;
+    transform: translateY(-50%);
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.15);
+}
+.sticky-left-bar a {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 18px;
+    text-decoration: none;
+}
+.bg-bar-phone { background-color: #0056b3; }
+.bg-bar-whatsapp { background-color: #25d366; }
+.bg-bar-mail { background-color: #e83e8c; }
+.bg-bar-instagram { background-color: #d62976; }
+.bg-bar-facebook { background-color: #1877f2; }
+.bg-bar-linkedin { background-color: #0a66c2; }
+
+/* FOOTER */
+.footer-nt-full {
+    background-color: #060919;
+    color: #94a3b8;
+    padding: 80px 0 30px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.footer-nt-full h5 {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 25px;
+    letter-spacing: 0.5px;
+}
+.footer-nt-full a {
+    color: #94a3b8;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.footer-nt-full a:hover {
+    color: var(--nt-cyan);
+}
+.footer-map-box {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    height: 180px;
+}
+.footer-map-box iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+.footer-social-icons a {
+    width: 38px;
+    height: 38px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    margin-right: 8px;
+}
+
+/* YUKARI ÇIK BUTONU */
+#btnBackToTop {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0284c7 0%, #00d2ff 100%);
+    color: #04101e;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 4px 20px rgba(0, 210, 255, 0.45);
+    z-index: 99999;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+#btnBackToTop.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+#btnBackToTop:hover {
+    transform: translateY(-4px) scale(1.1);
+    box-shadow: 0 6px 25px rgba(0, 210, 255, 0.7);
+    color: #ffffff;
+}

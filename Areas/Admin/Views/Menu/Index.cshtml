@@ -1,0 +1,103 @@
+﻿@model IEnumerable<KurumsalWebSitesi.Models.Entities.Menu>
+@{
+    ViewData["Title"] = "Menü Yönetimi";
+    var anaMenuler = Model.Where(m => m.UstMenuId == null).OrderBy(m => m.Sira).ToList();
+}
+
+<style>
+    .table-corporate thead th {
+        background-color: #1A2530 !important;
+        color: #ffffff !important;
+    }
+
+    .mobile-card {
+        background: #fff;
+        border: 1px solid #e3e6f0;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        padding: 15px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h4 mb-0 fw-bold text-dark">Dinamik Menü Yönetimi</h2>
+    <a href="/Admin/Menu/Ekle" class="btn btn-primary"><i class="fa-solid fa-plus me-1"></i> Yeni Menü Ekle</a>
+</div>
+
+<!-- MASAÜSTÜ TABLO -->
+<div class="d-none d-md-block shadow-sm rounded">
+    <table class="table table-hover align-middle mb-0 table-corporate">
+        <thead>
+            <tr>
+                <th class="px-4">Menü Başlığı</th>
+                <th>URL / Bağlantı</th>
+                <th>Sıra</th>
+                <th>Durum</th>
+                <th class="text-end px-4">İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var anaMenu in anaMenuler)
+            {
+                <tr class="table-primary">
+                    <td class="fw-bold px-4"><i class="fa-solid fa-folder me-2"></i> @anaMenu.Baslik</td>
+                    <td>@anaMenu.Url</td>
+                    <td>@anaMenu.Sira</td>
+                    <td><span class="badge @(anaMenu.AktifMi ? "bg-success" : "bg-danger")">@(anaMenu.AktifMi ? "Aktif" : "Pasif")</span></td>
+                    <td class="text-end px-4">
+                        <a href="/Admin/Menu/Duzenle/@anaMenu.Id" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <form action="/Admin/Menu/Sil" method="post" class="d-inline" onsubmit="return confirm('Silinsin mi? (Alt menüleri varsa onlar da silinir)');">
+                            <input type="hidden" name="id" value="@anaMenu.Id" />
+                            <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+
+                var altMenuler = Model.Where(m => m.UstMenuId == anaMenu.Id).OrderBy(m => m.Sira).ToList();
+                foreach (var altMenu in altMenuler)
+                {
+                    <tr>
+                        <td class="px-4 ps-5"><i class="fa-solid fa-arrow-turn-up fa-rotate-90 text-muted me-2"></i> @altMenu.Baslik</td>
+                        <td>@altMenu.Url</td>
+                        <td>@altMenu.Sira</td>
+                        <td><span class="badge @(altMenu.AktifMi ? "bg-success" : "bg-danger")">@(altMenu.AktifMi ? "Aktif" : "Pasif")</span></td>
+                        <td class="text-end px-4">
+                            <a href="/Admin/Menu/Duzenle/@altMenu.Id" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-pen-to-square"></i></a>
+                            <form action="/Admin/Menu/Sil" method="post" class="d-inline" onsubmit="return confirm('Silinsin mi?');">
+                                <input type="hidden" name="id" value="@altMenu.Id" />
+                                <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- MOBİL KART YAPISI -->
+<div class="d-md-none">
+    @foreach (var item in Model)
+    {
+        <div class="mobile-card">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <strong class="@(item.UstMenuId == null ? "text-primary" : "text-muted")">
+                    @if (item.UstMenuId != null)
+                    {
+                        <span>--</span>
+                    } @item.Baslik
+                </strong>
+                <span class="badge @(item.AktifMi ? "bg-success" : "bg-danger")">@(item.AktifMi ? "Aktif" : "Pasif")</span>
+            </div>
+            <div class="small mb-3 text-muted">URL: <code>@item.Url</code></div>
+            <div class="d-flex gap-2">
+                <a href="/Admin/Menu/Duzenle/@item.Id" class="btn btn-sm btn-outline-primary flex-grow-1">Düzenle</a>
+                <form action="/Admin/Menu/Sil" method="post" class="flex-grow-1" onsubmit="return confirm('Silinsin mi?');">
+                    <input type="hidden" name="id" value="@item.Id" />
+                    <button type="submit" class="btn btn-sm btn-outline-danger w-100">Sil</button>
+                </form>
+            </div>
+        </div>
+    }
+</div>

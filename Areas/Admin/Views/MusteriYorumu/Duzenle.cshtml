@@ -1,0 +1,51 @@
+@model KurumsalWebSitesi.Models.Entities.MusteriYorumu
+@{
+    ViewData["Title"] = "Müşteri Görüşünü Düzenle";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h4 mb-0 text-dark fw-bold">Görüşü Düzenle</h2>
+    <a href="/Admin/MusteriYorumu/Index" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left me-1"></i> Geri Dön
+    </a>
+</div>
+
+<form action="/Admin/MusteriYorumu/Duzenle/@Model.Id" method="post" class="card p-4 shadow-sm border-0">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="Id" value="@Model.Id" />
+
+    <div class="row g-3 mb-3">
+        <div class="col-md-6">
+            <label class="fw-bold">Müşteri / Şirket Adı <span class="text-danger">*</span></label>
+            <input name="AdSoyad" value="@Model.AdSoyad" class="form-control" required />
+        </div>
+        <div class="col-md-6">
+            <label class="fw-bold">Unvan / Açıklama</label>
+            <input name="Unvan" value="@Model.Unvan" class="form-control" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="fw-bold">Müşteri Yorumu <span class="text-danger">*</span></label>
+        <textarea name="Yorum" class="form-control" rows="4" required>@Model.Yorum</textarea>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <label class="fw-bold">Görüntülenme Sırası</label>
+            <input name="Sira" type="number" value="@Model.Sira" class="form-control" />
+        </div>
+        <div class="col-md-6 d-flex align-items-center pt-4">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" name="AktifMi" value="true" @(Model.AktifMi ? "checked" : "")>
+                <label class="form-check-label fw-bold ms-2">Yayında Olsun</label>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <button type="submit" class="btn btn-primary px-4">
+            <i class="fa-solid fa-floppy-disk me-1"></i> Güncelle
+        </button>
+    </div>
+</form>

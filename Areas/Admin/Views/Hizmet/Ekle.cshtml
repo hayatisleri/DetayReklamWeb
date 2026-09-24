@@ -1,0 +1,81 @@
+﻿@model KurumsalWebSitesi.Models.Entities.Hizmet
+
+@{
+    ViewData["Title"] = "Yeni Hizmet Ekle";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h4 mb-0 text-gray-800">Yeni Hizmet Ekle</h2>
+    <a href="/Admin/Hizmet/Index" class="btn btn-secondary"><i class="fa-solid fa-arrow-left me-1"></i> Geri Dön</a>
+</div>
+
+<!-- Dosya yükleme işlemi yapılacağı için enctype="multipart/form-data" eklenmek zorundadır -->
+<form action="/Admin/Hizmet/Ekle" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <!-- Sol Taraf: Ana İçerik -->
+        <div class="col-md-8">
+            <div class="card mb-4 shadow-sm border-0">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="Baslik" class="form-label fw-bold">Hizmet Başlığı <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="Baslik" name="Baslik" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="KisaAciklama" class="form-label fw-bold">Kısa Açıklama (Özet)</label>
+                        <textarea class="form-control" id="KisaAciklama" name="KisaAciklama" rows="3"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Icerik" class="form-label fw-bold">Hizmet Detay İçeriği</label>
+                        <textarea id="Icerik" name="Icerik" class="form-control"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sağ Taraf: Görsel ve Ayarlar -->
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm border-0">
+                <div class="card-body">
+                    <div class="mb-4">
+                        <label for="resimDosyasi" class="form-label fw-bold">Hizmet Görseli</label>
+                        <input type="file" class="form-control" id="resimDosyasi" name="resimDosyasi" accept="image/jpeg, image/png, image/webp">
+                        <small class="text-muted">Önerilen boyut: 800x600px. Yalnızca JPG, PNG veya WEBP.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Sira" class="form-label fw-bold">Gösterim Sırası</label>
+                        <input type="number" class="form-control" id="Sira" name="Sira" value="0">
+                        <small class="text-muted">Küçük numaralar sitede daha önce gösterilir.</small>
+                    </div>
+
+                    <div class="mb-4 form-check form-switch mt-3">
+                        <input class="form-check-input" type="checkbox" role="switch" id="AktifMi" name="AktifMi" value="true" checked>
+                        <label class="form-check-label fw-bold" for="AktifMi">Hizmet Aktif Olsun Mu?</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2"><i class="fa-solid fa-floppy-disk me-1"></i> Kaydet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <!-- CKEditor 5 CDN -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+    <style>
+        .ck-editor__editable_inline {
+            min-height: 300px;
+        }
+    </style>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#Icerik'))
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+}

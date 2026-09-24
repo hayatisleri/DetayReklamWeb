@@ -1,0 +1,57 @@
+@model KurumsalWebSitesi.Models.Entities.Proje
+@{
+    ViewData["Title"] = Model.Baslik;
+}
+
+<div class="py-5 bg-dark text-white text-center mb-5" style="background: radial-gradient(circle at center, #0d1536 0%, #060919 100%);">
+    <div class="container py-4">
+        <span class="text-info fw-bold text-uppercase small tracking-wide">// PROJE DETAYI</span>
+        <h1 class="fw-bold display-5 text-white mt-2">@Model.Baslik</h1>
+        <p class="text-white-50 mb-0">Tamamlanan kurumsal proje çalışmamız</p>
+    </div>
+</div>
+
+<div class="container mb-5 pb-5">
+    <div class="row g-5 align-items-start">
+        <!-- Proje Görseli -->
+        <div class="col-lg-7">
+            <div class="rounded-4 overflow-hidden shadow-lg border border-secondary border-opacity-25" style="background: #000;">
+                <img src="@(string.IsNullOrEmpty(Model.KapakResmi) ? "/img/default.jpg" : Model.KapakResmi)"
+                     alt="@Model.Baslik"
+                     class="img-fluid w-100 object-fit-cover"
+                     style="max-height: 500px;" />
+            </div>
+        </div>
+
+        <!-- Proje Açıklaması -->
+        <div class="col-lg-5">
+            <div class="p-4 rounded-4 shadow-sm" style="background: #090e24; border: 1px solid rgba(0, 210, 255, 0.15);">
+                <h3 class="fw-bold text-white mb-3">@Model.Baslik</h3>
+
+                <div class="mb-4 fs-6 lh-lg" style="color: #cbd5e1;">
+                    @if (!string.IsNullOrEmpty(Model.Icerik))
+                    {
+                        @Html.Raw(Model.Icerik)
+                    }
+                    else
+                    {
+                        <p>Bu proje için henüz detaylı metin eklenmemiştir.</p>
+                    }
+                </div>
+
+                <hr class="border-secondary border-opacity-25 my-4" />
+
+                <div class="d-grid gap-2">
+                    <a href="https://wa.me/905375070410?text=@(Uri.EscapeDataString("Merhaba, '" + Model.Baslik + "' projeniz hakkında bilgi almak istiyorum."))"
+                       target="_blank"
+                       class="btn btn-outline-success rounded-pill py-3 fw-bold">
+                        <i class="bi bi-whatsapp me-2"></i>Bu Proje İçin Bilgi Al
+                    </a>
+                    <a href="/Proje" class="btn btn-outline-light rounded-pill py-2 small mt-2">
+                        ← Tüm Projelere Dön
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

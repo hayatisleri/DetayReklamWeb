@@ -1,0 +1,474 @@
+﻿@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<style>
+    /* HERO GENEL STİLLERİ */
+    .hero-nt-section {
+        position: relative;
+        background: radial-gradient(circle at 80% 20%, #1e1b4b 0%, #0a0e27 45%, #050716 100%);
+        overflow: hidden;
+        padding: 70px 0 130px 0;
+        color: #ffffff;
+    }
+    .hero-nt-section::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image:
+            radial-gradient(rgba(255, 183, 3, 0.12) 1px, transparent 1px),
+            radial-gradient(rgba(255, 183, 3, 0.08) 1px, transparent 1px);
+        background-size: 30px 30px;
+        background-position: 0 0, 15px 15px;
+        opacity: 0.7;
+        pointer-events: none;
+    }
+    .hero-title-main {
+        font-size: 3.4rem;
+        font-weight: 800;
+        line-height: 1.15;
+        letter-spacing: -1px;
+        color: #ffffff;
+    }
+    .hero-subtitle-text {
+        color: #94a3b8;
+        font-size: 1.1rem;
+        margin-top: 18px;
+        margin-bottom: 35px;
+        max-width: 500px;
+    }
+    .play-badge-wrap {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+    }
+    .btn-play-circle {
+        width: 65px;
+        height: 65px;
+        border-radius: 50%;
+        background-color: #ffffff;
+        color: #FFB703;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        box-shadow: 0 0 25px rgba(255, 183, 3, 0.35);
+        border: none;
+        outline: none;
+        cursor: pointer;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        padding-left: 5px;
+    }
+    .btn-play-circle:hover {
+        transform: scale(1.12);
+        color: #FFA200;
+        box-shadow: 0 0 35px rgba(255, 183, 3, 0.6);
+    }
+    .badge-partner {
+        border-left: 2px solid rgba(255, 183, 3, 0.4);
+        padding-left: 18px;
+    }
+    .mockup-wrap img {
+        width: 100%;
+        max-width: 620px;
+        filter: drop-shadow(0 20px 40px rgba(255, 183, 3, 0.2));
+        animation: floatImg 4s ease-in-out infinite;
+    }
+    @@keyframes floatImg {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-12px); }
+    }
+
+    /* 3'LÜ KUTULAR */
+    .three-boxes-wrap {
+        position: relative;
+        margin-top: -65px;
+        z-index: 10;
+        margin-bottom: 70px;
+    }
+    .feature-box {
+        border-radius: 12px;
+        padding: 24px 28px;
+        color: #0b0f19 !important;
+        background: #FFB703 !important;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        text-decoration: none;
+        box-shadow: 0 10px 25px rgba(255, 183, 3, 0.28);
+        border: 1px solid #e09f00;
+        transition: transform 0.25s ease, background 0.25s ease;
+        min-height: 95px;
+    }
+    .feature-box:hover {
+        transform: translateY(-6px);
+        background: #ffc229 !important;
+        color: #000000 !important;
+    }
+    .feature-box i {
+        color: #0b0f19 !important;
+    }
+
+    /* HİZMETLER */
+    .solutions-section {
+        padding: 60px 0;
+        background-color: #ffffff;
+    }
+    .solutions-title {
+        font-weight: 800;
+        font-size: 2.3rem;
+        color: #0f172a;
+        text-align: center;
+        margin-bottom: 50px;
+    }
+    .service-card-dark {
+        background-color: #090e24;
+        border-radius: 8px;
+        padding: 35px 25px;
+        color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        text-align: center;
+        box-shadow: 0 10px 25px rgba(9, 14, 36, 0.12);
+        transition: transform 0.25s ease;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .service-card-dark:hover {
+        transform: translateY(-6px);
+        border-color: rgba(255, 183, 3, 0.3);
+    }
+    .service-card-dark h4 {
+        font-weight: 700;
+        font-size: 1.25rem;
+        margin-bottom: 15px;
+    }
+    .service-card-dark p {
+        color: #94a3b8;
+        font-size: 0.92rem;
+        line-height: 1.65;
+        flex-grow: 1;
+        margin-bottom: 25px;
+    }
+    .btn-card-cyan {
+        background-color: #FFB703 !important;
+        color: #0b0f19 !important;
+        font-weight: 800;
+        font-size: 0.85rem;
+        padding: 10px 20px;
+        border-radius: 4px;
+        letter-spacing: 0.5px;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.2s ease;
+    }
+    .btn-card-cyan:hover {
+        background-color: #FFA200 !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(255, 183, 3, 0.4);
+    }
+
+    /* VİTRİN KARTLARI */
+    .catalog-showcase-section {
+        padding: 70px 0;
+        background-color: #f8fafc;
+    }
+    .catalog-card {
+        background: #ffffff;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .catalog-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+    .catalog-card-img {
+        height: 200px;
+        background-color: #0f172a;
+        overflow: hidden;
+    }
+    .catalog-card-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* HAKKIMIZDA & GÖRÜŞLER */
+    .about-dark-section {
+        background-color: #060919;
+        color: #ffffff;
+        padding: 90px 0;
+        position: relative;
+    }
+    .about-tag {
+        color: #FFB703 !important;
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+    }
+    .about-text-clear {
+        color: #e2e8f0 !important;
+        font-size: 1.05rem;
+        line-height: 1.85;
+        font-weight: 400;
+    }
+    .about-visual-box {
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 0 35px rgba(255, 183, 3, 0.2);
+        border: 1px solid rgba(255, 183, 3, 0.2);
+    }
+    .about-visual-box img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+    .reviews-section {
+        background: radial-gradient(circle at center, #0f172a 0%, #060919 100%);
+        padding: 80px 0;
+        color: #ffffff;
+    }
+    .review-card {
+        background-color: #0a0f29;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        padding: 30px;
+        height: 100%;
+    }
+    .review-client-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+    .review-avatar {
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        background-color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #090e24;
+        font-weight: 800;
+        font-size: 1.1rem;
+    }
+
+    /* REFERANSLAR */
+    .clients-logo-section {
+        background-color: #ffffff;
+        padding: 80px 0;
+        text-align: center;
+    }
+    .logo-item {
+        height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+        border-radius: 10px;
+        background-color: #ffffff;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        border: 1px solid #edf2f7;
+        transition: all 0.3s ease;
+    }
+    .logo-item:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        border-color: #FFB703;
+    }
+    .logo-item img {
+        max-height: 75px;
+        max-width: 90%;
+        object-fit: contain;
+    }
+    .btn-all-refs {
+        background-color: #FFB703;
+        color: #0b0f19 !important;
+        font-weight: 800;
+        padding: 12px 32px;
+        border-radius: 6px;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 45px;
+        transition: all 0.2s ease;
+    }
+    .btn-all-refs:hover {
+        background-color: #FFA200;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(255, 183, 3, 0.4);
+    }
+
+    /* BLOG */
+    .blog-section {
+        background-color: #ffffff;
+        padding: 80px 0;
+    }
+    .blog-card {
+        background: #ffffff;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .blog-img {
+        height: 200px;
+        overflow: hidden;
+        background-color: #0f172a;
+    }
+    .blog-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .blog-badges {
+        display: flex;
+        gap: 6px;
+        padding: 15px 20px 0 20px;
+    }
+    .blog-badge {
+        background-color: #FFB703 !important;
+        color: #0b0f19 !important;
+        font-size: 0.7rem;
+        font-weight: 800;
+        padding: 3px 8px;
+        border-radius: 3px;
+        text-transform: uppercase;
+    }
+
+    /* VİDEO MODAL */
+    .modal-video-box .modal-content {
+        background-color: #000000;
+        border: 2px solid rgba(255, 183, 3, 0.5);
+        border-radius: 14px;
+        overflow: hidden;
+    }
+
+    /* SARI DÖNÜŞTÜREN KURALLAR */
+    [class*="badge"],
+    .section-badge,
+    .badge-soft-primary {
+        background-color: rgba(255, 183, 3, 0.15) !important;
+        color: #FFB703 !important;
+        border: 1px solid rgba(255, 183, 3, 0.4) !important;
+        font-weight: 700 !important;
+    }
+
+    .text-primary,
+    .text-info,
+    .text-cyan,
+    .sub-title-accent,
+    h6.text-primary,
+    span.text-info,
+    span.text-primary {
+        color: #FFB703 !important;
+    }
+
+    .btn-primary,
+    .btn-info,
+    a.btn[href*="Hizmet"],
+    a.btn[href*="hizmet"],
+    a.btn[href*="Cozum"],
+    a.btn[href*="Proje"] {
+        background-color: #FFB703 !important;
+        border-color: #FFB703 !important;
+        color: #0b0f19 !important;
+        font-weight: 800 !important;
+        box-shadow: 0 4px 18px rgba(255, 183, 3, 0.35) !important;
+        transition: all 0.25s ease !important;
+    }
+    .btn-primary:hover,
+    .btn-info:hover,
+    a.btn[href*="Hizmet"]:hover,
+    a.btn[href*="Proje"]:hover {
+        background-color: #FFA200 !important;
+        border-color: #FFA200 !important;
+        color: #000000 !important;
+        transform: translateY(-2px) !important;
+    }
+
+    .btn-outline-primary,
+    .btn-outline-info {
+        border-color: #FFB703 !important;
+        color: #FFB703 !important;
+        font-weight: 700 !important;
+    }
+    .btn-outline-primary:hover,
+    .btn-outline-info:hover {
+        background-color: #FFB703 !important;
+        border-color: #FFB703 !important;
+        color: #0b0f19 !important;
+        box-shadow: 0 4px 15px rgba(255, 183, 3, 0.4) !important;
+    }
+
+    .nav-pills .nav-link.active,
+    .filter-btn.active,
+    .portfolio-filter button.active,
+    .btn-filter.active,
+    .btn-group .btn.active {
+        background-color: #FFB703 !important;
+        border-color: #FFB703 !important;
+        color: #0b0f19 !important;
+        font-weight: 800 !important;
+    }
+
+    .card .badge,
+    .product-tag,
+    .catalog-tag {
+        background-color: #FFB703 !important;
+        color: #0b0f19 !important;
+        font-weight: 700 !important;
+        border: none !important;
+    }
+</style>
+
+<!-- 1. HERO BİLEŞENİ -->
+@await Component.InvokeAsync("Hero")
+
+<!-- 2. HİZMETLER BİLEŞENİ -->
+@await Component.InvokeAsync("Hizmetler")
+
+<!-- 3. VİTRİN BİLEŞENİ (ÜRÜNLER & PROJELER) -->
+@await Component.InvokeAsync("Vitrin")
+
+<!-- 4. HAKKIMIZDA & MÜŞTERİ GÖRÜŞLERİ BİLEŞENİ -->
+@await Component.InvokeAsync("Hakkimizda")
+
+<!-- TANITIM VİDEO MODALI -->
+<div class="modal fade modal-video-box" id="tanitimVideoModal" tabindex="-1" aria-labelledby="tanitimVideoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0 bg-dark py-2 px-3">
+                <span class="text-white-50 small fw-bold"><i class="bi bi-play-fill me-2" style="color: #FFB703;"></i>Kurumsal Tanıtım Videosu</span>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="ratio ratio-16x9">
+                    <iframe id="videoIframe" src="https://www.youtube.com/embed/LXb3EKWsInQ?enablejsapi=1" title="Kurumsal Tanıtım Videosu" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const videoModal = document.getElementById('tanitimVideoModal');
+        const videoIframe = document.getElementById('videoIframe');
+        if (videoModal && videoIframe) {
+            videoModal.addEventListener('hidden.bs.modal', function () {
+                const videoSrc = videoIframe.src;
+                videoIframe.src = '';
+                videoIframe.src = videoSrc;
+            });
+        }
+    </script>
+}

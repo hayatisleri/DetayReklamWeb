@@ -1,0 +1,321 @@
+@model dynamic
+@{
+    // Ürün kategorilerini dinamik topla
+    var urunListesi = Model?.Urunler as IEnumerable<dynamic>;
+    var urunKategorileri = new List<string>();
+    if (urunListesi != null)
+    {
+        foreach (var u in urunListesi)
+        {
+            string k = (string)(u.Kategori ?? "");
+            if (!string.IsNullOrWhiteSpace(k) && !urunKategorileri.Contains(k.Trim()))
+            {
+                urunKategorileri.Add(k.Trim());
+            }
+        }
+    }
+
+    // Proje kategorilerini dinamik topla
+    var projeListesi = Model?.Projeler as IEnumerable<dynamic>;
+    var projeKategorileri = new List<string>();
+    if (projeListesi != null)
+    {
+        foreach (var p in projeListesi)
+        {
+            string k = (string)(p.Kategori ?? "");
+            if (!string.IsNullOrWhiteSpace(k) && !projeKategorileri.Contains(k.Trim()))
+            {
+                projeKategorileri.Add(k.Trim());
+            }
+        }
+    }
+}
+
+<section class="vitrin-dark-section py-5">
+    <div class="container py-4">
+
+        <!-- ================= 1. BÖLÜM: ÖNE ÇIKAN ÜRÜNLER ================= -->
+        @if (urunListesi != null && urunListesi.Any())
+        {
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 border-bottom border-secondary border-opacity-25 pb-3 gap-3">
+                <div>
+                    <span class="text-neon-cyan fw-bold text-uppercase small tracking-wide">// İMALAT VİTRİNİ</span>
+                    <h2 class="fw-bold display-6 text-white mb-0">Öne Çıkan Ürünlerimiz</h2>
+                </div>
+                <a href="/Urun" class="btn btn-outline-neon rounded-pill px-4 py-2">TÜM ÜRÜNLER</a>
+            </div>
+
+            <!-- Ürün Kategori Filtre Butonları -->
+            @if (urunKategorileri.Any())
+            {
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                    <button type="button" class="btn btn-vitrin-filter active" data-target-grid="vitrinUrunGrid" data-filter="all">Tümü</button>
+                    @foreach (var kat in urunKategorileri)
+                    {
+                        var slug = kat.ToLower().Replace(" ", "-").Replace("ı", "i").Replace("ğ", "g").Replace("ü", "u").Replace("ş", "s").Replace("ö", "o").Replace("ç", "c");
+                        <button type="button" class="btn btn-vitrin-filter" data-target-grid="vitrinUrunGrid" data-filter="@slug">@kat</button>
+                    }
+                </div>
+            }
+
+            <div class="row g-4 mb-5" id="vitrinUrunGrid">
+                @foreach (var item in urunListesi)
+                {
+                    var dosyaYolu = (string)(item.ResimAdresi ?? "");
+                    var videoMu = dosyaYolu.EndsWith(".mp4", StringComparison.OrdinalIgnoreCase) ||
+                                  dosyaYolu.EndsWith(".webm", StringComparison.OrdinalIgnoreCase);
+
+                    string katAdi = (string)(item.Kategori ?? "Genel");
+                    var katSlug = katAdi.Trim().ToLower().Replace(" ", "-").Replace("ı", "i").Replace("ğ", "g").Replace("ü", "u").Replace("ş", "s").Replace("ö", "o").Replace("ç", "c");
+
+                    <div class="col-md-6 col-lg-4 vitrin-item" data-category="@katSlug">
+                        <div class="vitrin-card h-100 rounded-4 overflow-hidden d-flex flex-column">
+                            <div class="vitrin-card-img position-relative overflow-hidden">
+                                @if (!string.IsNullOrEmpty(dosyaYolu))
+                                {
+                                    @if (videoMu)
+                                    {
+                                        <video autoplay muted loop playsinline class="w-100 h-100 object-fit-cover">
+                                            <source src="@dosyaYolu" type="video/mp4">
+                                        </video>
+                                    }
+                                    else
+                                    {
+                                        <img src="@dosyaYolu" alt="@item.Ad" class="w-100 h-100 object-fit-cover" />
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-dark">
+                                        <i class="bi bi-box-seam text-white-50 fs-1"></i>
+                                    </div>
+                                }
+
+                                <!-- Kategori Rozeti -->
+                                <span class="position-absolute top-0 end-0 m-3 badge bg-black bg-opacity-75 text-white px-3 py-2 rounded-pill fw-semibold shadow-sm" style="backdrop-filter: blur(5px); font-size: 0.75rem;">
+                                    <i class="bi bi-tag-fill me-1 text-info"></i> @katAdi
+                                </span>
+                            </div>
+
+                            <div class="card-body p-4 d-flex flex-column flex-grow-1">
+                                <h4 class="fw-bold text-white mb-2">@item.Ad</h4>
+                                <p class="text-light-muted small flex-grow-1 mb-3">
+                                    @{
+                                        string aciklama = item.Aciklama ?? "";
+                                        string temizMetin = System.Text.RegularExpressions.Regex.Replace(aciklama, "<.*?>", string.Empty);
+                                    }
+                                    @(temizMetin.Length > 90 ? temizMetin.Substring(0, 90) + "..." : temizMetin)
+                                </p>
+                                <a href="/Urun" class="btn btn-neon rounded-pill w-100 py-2 fw-semibold text-center">
+                                    Sipariş &amp; Teklif
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+        <!-- ================= 2. BÖLÜM: TAMAMLANAN PROJELER ================= -->
+        @if (projeListesi != null && projeListesi.Any())
+        {
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 border-bottom border-secondary border-opacity-25 pb-3 mt-4 gap-3">
+                <div>
+                    <span class="text-neon-cyan fw-bold text-uppercase small tracking-wide">// İŞLERİMİZ</span>
+                    <h2 class="fw-bold display-6 text-white mb-0">Tamamlanan Projeler</h2>
+                </div>
+                <a href="/Proje" class="btn btn-outline-neon rounded-pill px-4 py-2">TÜM PROJELER</a>
+            </div>
+
+            <!-- Proje Kategori Filtre Butonları -->
+            @if (projeKategorileri.Any())
+            {
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                    <button type="button" class="btn btn-vitrin-filter active" data-target-grid="vitrinProjeGrid" data-filter="all">Tümü</button>
+                    @foreach (var kat in projeKategorileri)
+                    {
+                        var slug = kat.ToLower().Replace(" ", "-").Replace("ı", "i").Replace("ğ", "g").Replace("ü", "u").Replace("ş", "s").Replace("ö", "o").Replace("ç", "c");
+                        <button type="button" class="btn btn-vitrin-filter" data-target-grid="vitrinProjeGrid" data-filter="@slug">@kat</button>
+                    }
+                </div>
+            }
+
+            <div class="row g-4" id="vitrinProjeGrid">
+                @foreach (var item in projeListesi)
+                {
+                    string pDosya = !string.IsNullOrEmpty(item.KapakResmi)
+                                    ? (string)item.KapakResmi
+                                    : (!string.IsNullOrEmpty(item.ResimAdresi) ? (string)item.ResimAdresi : "");
+                    var pVideoMu = pDosya.EndsWith(".mp4", StringComparison.OrdinalIgnoreCase) ||
+                                   pDosya.EndsWith(".webm", StringComparison.OrdinalIgnoreCase);
+
+                    string katAdi = (string)(item.Kategori ?? "Genel");
+                    var katSlug = katAdi.Trim().ToLower().Replace(" ", "-").Replace("ı", "i").Replace("ğ", "g").Replace("ü", "u").Replace("ş", "s").Replace("ö", "o").Replace("ç", "c");
+
+                    <div class="col-md-6 col-lg-4 vitrin-item" data-category="@katSlug">
+                        <div class="vitrin-card h-100 rounded-4 overflow-hidden d-flex flex-column">
+                            <div class="vitrin-card-img position-relative overflow-hidden">
+                                @if (!string.IsNullOrEmpty(pDosya))
+                                {
+                                    @if (pVideoMu)
+                                    {
+                                        <video autoplay muted loop playsinline class="w-100 h-100 object-fit-cover">
+                                            <source src="@pDosya" type="video/mp4">
+                                        </video>
+                                    }
+                                    else
+                                    {
+                                        <img src="@pDosya" alt="@item.Baslik" class="w-100 h-100 object-fit-cover" />
+                                    }
+                                }
+                                else
+                                {
+                                    <img src="/img/default.jpg" alt="@item.Baslik" class="w-100 h-100 object-fit-cover" />
+                                }
+
+                                <!-- Kategori Rozeti -->
+                                <span class="position-absolute top-0 end-0 m-3 badge bg-black bg-opacity-75 text-white px-3 py-2 rounded-pill fw-semibold shadow-sm" style="backdrop-filter: blur(5px); font-size: 0.75rem;">
+                                    <i class="bi bi-briefcase-fill me-1 text-info"></i> @katAdi
+                                </span>
+                            </div>
+
+                            <div class="card-body p-4 d-flex flex-column flex-grow-1">
+                                <h4 class="fw-bold text-white mb-2">@item.Baslik</h4>
+                                <p class="text-light-muted small flex-grow-1 mb-3">
+                                    @{
+                                        string projeAciklama = item.Icerik ?? "";
+                                        string temizProjeMetin = System.Text.RegularExpressions.Regex.Replace(projeAciklama, "<.*?>", string.Empty);
+                                    }
+                                    @(temizProjeMetin.Length > 90 ? temizProjeMetin.Substring(0, 90) + "..." : temizProjeMetin)
+                                </p>
+                                <a href="/Proje/Detay/@item.Id" class="btn btn-outline-neon rounded-pill w-100 py-2 fw-semibold text-center">
+                                    Detayları İncele
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+    </div>
+</section>
+
+<style>
+    .vitrin-dark-section {
+        background: radial-gradient(circle at 50% 30%, #0d1536 0%, #060919 100%);
+        border-top: 1px solid rgba(0, 210, 255, 0.12);
+        border-bottom: 1px solid rgba(0, 210, 255, 0.12);
+    }
+
+    .text-neon-cyan { color: #00d2ff !important; }
+    .tracking-wide { letter-spacing: 1.5px; }
+    .text-light-muted { color: #cbd5e1 !important; }
+
+    .vitrin-card {
+        background: #090e24;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .vitrin-card:hover {
+        transform: translateY(-7px);
+        border-color: rgba(0, 210, 255, 0.4);
+        box-shadow: 0 15px 35px rgba(0, 210, 255, 0.2);
+    }
+
+    .vitrin-card-img {
+        height: 220px;
+        background-color: #050716;
+    }
+
+    .vitrin-card-img img,
+    .vitrin-card-img video {
+        transition: transform 0.4s ease;
+        display: block;
+    }
+
+    .vitrin-card:hover .vitrin-card-img img,
+    .vitrin-card:hover .vitrin-card-img video {
+        transform: scale(1.06);
+    }
+
+    .btn-neon {
+        background: linear-gradient(135deg, #0284c7 0%, #00d2ff 100%);
+        color: #04101e !important;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-neon:hover {
+        transform: scale(1.02);
+        box-shadow: 0 6px 22px rgba(0, 210, 255, 0.5);
+    }
+
+    .btn-outline-neon {
+        color: #00d2ff;
+        border: 1.5px solid rgba(0, 210, 255, 0.4);
+        background: transparent;
+        transition: all 0.25s ease;
+    }
+
+    .btn-outline-neon:hover {
+        background: rgba(0, 210, 255, 0.12);
+        color: #ffffff;
+        border-color: #00d2ff;
+        transform: translateY(-2px);
+    }
+
+    /* Vitrin Kategori Butonları */
+    .btn-vitrin-filter {
+        border-radius: 50px;
+        padding: 6px 18px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        background: rgba(255, 255, 255, 0.05);
+        color: #94a3b8;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.25s ease;
+    }
+
+    .btn-vitrin-filter:hover, .btn-vitrin-filter.active {
+        background: var(--nt-cyan, #00d2ff);
+        color: #04101e;
+        border-color: var(--nt-cyan, #00d2ff);
+        box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const filterButtons = document.querySelectorAll('.btn-vitrin-filter');
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', function () {
+                const targetGridId = this.getAttribute('data-target-grid');
+                const selectedFilter = this.getAttribute('data-filter');
+                const container = document.getElementById(targetGridId);
+
+                if (!container) return;
+
+                // İlgili grubun butonlarının active durumunu güncelle
+                const siblingBtns = document.querySelectorAll(`.btn-vitrin-filter[data-target-grid="${targetGridId}"]`);
+                siblingBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                // Sadece o gruba ait kartları filtrele
+                const items = container.querySelectorAll('.vitrin-item');
+                items.forEach(item => {
+                    const itemCat = item.getAttribute('data-category');
+                    if (selectedFilter === 'all' || itemCat === selectedFilter) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+    });
+</script>

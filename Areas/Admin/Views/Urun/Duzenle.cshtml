@@ -1,0 +1,89 @@
+﻿@model KurumsalWebSitesi.Models.Entities.Urun
+@{
+    ViewData["Title"] = "Ürün Düzenle";
+    var dosyaYolu = Model.ResimAdresi ?? "";
+    var videoMu = dosyaYolu.EndsWith(".mp4", StringComparison.OrdinalIgnoreCase) ||
+                  dosyaYolu.EndsWith(".webm", StringComparison.OrdinalIgnoreCase);
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h4 mb-0 text-dark fw-bold">Ürün Düzenle</h2>
+    <a href="/Admin/Urun/Index" class="btn btn-secondary"><i class="fa-solid fa-arrow-left me-1"></i> Geri Dön</a>
+</div>
+
+<form action="/Admin/Urun/Duzenle" method="post" enctype="multipart/form-data" class="card p-4 shadow-sm border-0">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <input type="hidden" name="ResimAdresi" value="@Model.ResimAdresi" />
+
+    <!-- Mevcut Görsel / Video Önizleme -->
+    @if (!string.IsNullOrEmpty(Model.ResimAdresi))
+    {
+        <div class="mb-3 text-center border-bottom pb-3">
+            @if (videoMu)
+            {
+                <video autoplay muted loop playsinline style="width:180px; height:150px; object-fit:cover;" class="rounded border shadow-sm">
+                    <source src="@Model.ResimAdresi" type="video/mp4">
+                </video>
+            }
+            else
+            {
+                <img src="@Model.ResimAdresi" style="width:150px; height:150px; object-fit:cover;" class="rounded border shadow-sm" alt="@Model.Ad" />
+            }
+        </div>
+    }
+
+    <!-- Ürün Adı ve Kategori Yan Yana -->
+    <div class="row g-3 mb-3">
+        <div class="col-md-7">
+            <label class="fw-bold">Ürün Adı <span class="text-danger">*</span></label>
+            <input name="Ad" class="form-control" value="@Model.Ad" required />
+        </div>
+        <div class="col-md-5">
+            <label class="fw-bold">Kategori</label>
+            <input name="Kategori" class="form-control" list="urunKategoriListesi" placeholder="Örn: Tabela Sistemleri" value="@(string.IsNullOrWhiteSpace(Model.Kategori) ? "Genel" : Model.Kategori)" />
+            <datalist id="urunKategoriListesi">
+                <option value="Tabela Sistemleri" />
+                <option value="Dijital Baskı" />
+                <option value="Kutu Harf" />
+                <option value="Yönlendirme Levhaları" />
+                <option value="Folyo Uygulama" />
+                <option value="Led Ekran" />
+            </datalist>
+            <small class="text-muted">Mevcut kategoriyi değiştirebilir veya yeni yazabilirsiniz.</small>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="fw-bold">Açıklama</label>
+        <textarea id="Aciklama" name="Aciklama" class="form-control">@Html.Raw(Model.Aciklama)</textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="fw-bold">Teknik Detaylar</label>
+        <textarea id="TeknikDetaylar" name="TeknikDetaylar" class="form-control">@Html.Raw(Model.TeknikDetaylar)</textarea>
+    </div>
+
+    <div class="mb-4">
+        <label class="form-label fw-bold">Görsel veya Kısa Video Değiştir (.mp4)</label>
+        <input type="file" name="Resim" class="form-control" accept="image/*,video/mp4,video/webm" />
+        <small class="text-muted">Değiştirmek istemiyorsanız boş bırakın.</small>
+    </div>
+
+    <div>
+        <button type="submit" class="btn btn-primary px-4"><i class="fa-solid fa-floppy-disk me-1"></i> Değişiklikleri Kaydet</button>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+    <style>
+        .ck-editor__editable_inline {
+            min-height: 200px;
+        }
+    </style>
+    <script>
+        ClassicEditor.create(document.querySelector('#Aciklama')).catch(error => console.error(error));
+        ClassicEditor.create(document.querySelector('#TeknikDetaylar')).catch(error => console.error(error));
+    </script>
+}

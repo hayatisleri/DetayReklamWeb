@@ -1,0 +1,77 @@
+﻿@model KurumsalWebSitesi.ViewComponents.ReferansHaberViewModel
+
+@if (Model?.Referanslar != null && Model.Referanslar.Any())
+{
+    <section class="brand-partner-section py-5 bg-white">
+        <div class="container py-3">
+            <!-- Başlık -->
+            <div class="text-center mb-5">
+                <h2 class="partner-heading fw-bold text-dark mb-0">
+                    100+ Marka & Firmanın Çözüm Ortağıyız !
+                </h2>
+            </div>
+
+            <!-- Logo Grid Izgarası -->
+            <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-4 g-4 g-lg-5 align-items-center justify-content-center">
+                @foreach (var item in Model.Referanslar)
+                {
+                    <div class="col text-center">
+                        <div class="logo-item-wrapper d-flex align-items-center justify-content-center p-2">
+                            <img src="@item.LogoAdresi"
+                                 alt="@item.FirmaAdi"
+                                 title="@item.FirmaAdi"
+                                 class="brand-logo img-fluid" />
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+
+    <style>
+        .brand-partner-section {
+            border-top: 1px solid #f1f5f9;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .partner-heading {
+            font-size: 2rem;
+            font-weight: 800 !important;
+            letter-spacing: -0.5px;
+            color: #1a1a1a !important;
+        }
+
+        .logo-item-wrapper {
+            height: 95px;
+            background: transparent;
+            transition: transform 0.25s ease;
+        }
+
+        .brand-logo {
+            max-height: 75px;
+            max-width: 100%;
+            width: auto;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .logo-item-wrapper:hover .brand-logo {
+            transform: scale(1.08);
+            opacity: 0.85;
+        }
+
+        @@media (max-width: 768px) {
+            .partner-heading {
+                font-size: 1.4rem;
+            }
+            .logo-item-wrapper {
+                height: 75px;
+            }
+            .brand-logo {
+                max-height: 55px;
+            }
+        }
+    </style>
+}

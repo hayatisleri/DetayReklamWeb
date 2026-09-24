@@ -1,0 +1,130 @@
+﻿@model KurumsalWebSitesi.Models.Entities.SiteAyari
+@{
+    ViewData["Title"] = "Site Ayarlarını Düzenle";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h4 mb-0 text-dark fw-bold">Site Ayarlarını Düzenle</h2>
+    <a href="/Admin/SiteAyari/Index" class="btn btn-secondary"><i class="fa-solid fa-arrow-left me-1"></i> Ayarlara Dön</a>
+</div>
+
+<form action="/Admin/SiteAyari/Duzenle" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <input type="hidden" name="LogoAdresi" value="@Model.LogoAdresi" />
+    <input type="hidden" name="FaviconAdresi" value="@Model.FaviconAdresi" />
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white fw-bold py-3">Genel Bilgiler</div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="fw-bold">Site Başlığı <span class="text-danger">*</span></label>
+                        <input name="SiteBasligi" class="form-control" value="@Model.SiteBasligi" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="fw-bold">Site Açıklaması (SEO)</label>
+                        <textarea name="SiteAciklamasi" class="form-control" rows="3">@Model.SiteAciklamasi</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white fw-bold py-3">İletişim & Sosyal Medya</div>
+                <div class="card-body row">
+                    <div class="col-md-6 mb-3">
+                        <label class="fw-bold">Telefon Numarası</label>
+                        <input name="TelefonNumarasi" class="form-control" value="@Model.TelefonNumarasi" />
+                    </div>
+                    <div class="mb-3">
+    <label asp-for="WhatsappNumarasi" class="form-label fw-bold">WhatsApp Hattı</label>
+    <input asp-for="WhatsappNumarasi" class="form-control" placeholder="Örn: 05375070410" />
+    <span asp-validation-for="WhatsappNumarasi" class="text-danger small"></span>
+</div>
+
+
+
+                    <div class="col-md-6 mb-3">
+                        <label class="fw-bold">E-Posta Adresi</label>
+                        <input name="EpostaAdresi" class="form-control" value="@Model.EpostaAdresi" />
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label class="fw-bold">Açık Adres</label>
+                        <textarea name="Adres" class="form-control" rows="2">@Model.Adres</textarea>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="fw-bold">Facebook</label>
+                        <input name="FacebookAdresi" class="form-control" value="@Model.FacebookAdresi" />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="fw-bold">Instagram</label>
+                        <input name="InstagramAdresi" class="form-control" value="@Model.InstagramAdresi" />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="fw-bold">LinkedIn</label>
+                        <input name="LinkedInAdresi" class="form-control" value="@Model.LinkedInAdresi" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0 mb-4" style="border-left: 4px solid #3498DB !important;">
+                <div class="card-header bg-white fw-bold py-3">Google Analitik & Search Console API</div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="fw-bold text-dark">Google Analytics 4 (GA4) Kimliği</label>
+                        <input name="GoogleAnalyticsId" class="form-control" placeholder="Örn: G-123456789" value="@Model.GoogleAnalyticsId" />
+                        <small class="text-muted">G- ile başlayan izleme kimliğini girdiğinizde site trafiği önyüzde otomatik izlenmeye başlar.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="fw-bold text-dark">Search Console Mülk URL'si</label>
+                        <input name="GscPropertyUrl" class="form-control" placeholder="Örn: sc-domain:ornekfirma.com veya https://www.ornekfirma.com/" value="@Model.GscPropertyUrl" />
+                        <small class="text-muted">Google Search Console üzerinde sitenizin ekli olduğu mülk adını eksiksiz girin.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="fw-bold text-dark">Servis Hesabı (JSON) Dosya Yolu</label>
+                        <input name="GscServiceAccountJsonPath" class="form-control" placeholder="Örn: C:\inetpub\vhosts\ornekfirma.com\httpdocs\api-key.json" value="@Model.GscServiceAccountJsonPath" />
+                        <small class="text-muted">Google Cloud Platform'dan aldığınız yetkilendirilmiş JSON dosyasının sunucu üzerindeki tam dizin yolu.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white fw-bold py-3">Kurumsal Kimlik</div>
+                <div class="card-body">
+                    <div class="mb-4 text-center">
+                        <label class="fw-bold d-block mb-2">Mevcut Logo</label>
+                        @if (!string.IsNullOrEmpty(Model.LogoAdresi))
+                        {
+                            <img src="@Model.LogoAdresi" class="img-fluid border rounded p-2" style="max-height: 100px;" />
+                        }
+                        else
+                        {
+                            <div class="text-muted small">Logo yüklenmemiş</div>
+                        }
+                        <input type="file" name="logoDosyasi" class="form-control mt-3" accept="image/*" />
+                    </div>
+                    <hr />
+                    <div class="mb-3 text-center">
+                        <label class="fw-bold d-block mb-2">Mevcut Favicon</label>
+                        @if (!string.IsNullOrEmpty(Model.FaviconAdresi))
+                        {
+                            <img src="@Model.FaviconAdresi" class="border rounded p-1" style="max-height: 32px;" />
+                        }
+                        else
+                        {
+                            <div class="text-muted small">Favicon yüklenmemiş</div>
+                        }
+                        <input type="file" name="faviconDosyasi" class="form-control mt-3" accept="image/x-icon,image/png" />
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-3 fw-bold shadow-sm">
+                <i class="fa-solid fa-floppy-disk me-2"></i> Ayarları Kaydet
+            </button>
+        </div>
+    </div>
+</form>

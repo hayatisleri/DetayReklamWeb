@@ -1,0 +1,69 @@
+@model List<KurumsalWebSitesi.Models.Entities.Referans>
+@{
+    ViewData["Title"] = "Referanslarımız";
+}
+
+<style>
+    .ref-page-header {
+        background: radial-gradient(circle at center, #1e1b4b 0%, #0a0e27 100%);
+        padding: 60px 0;
+        color: #ffffff;
+        text-align: center;
+        margin-bottom: 50px;
+    }
+    .ref-box-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        height: 150px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+        transition: all 0.25s ease;
+    }
+    .ref-box-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        border-color: #38bdf8;
+    }
+    .ref-box-card img {
+        max-height: 80px;
+        max-width: 85%;
+        object-fit: contain;
+    }
+</style>
+
+<div class="ref-page-header">
+    <div class="container">
+        <h1 class="fw-bold display-5">Referanslarımız</h1>
+        <p class="text-white-50 mb-0">Bizi tercih eden ve birlikte çalışmaktan gurur duyduğumuz markalar.</p>
+    </div>
+</div>
+
+<div class="container mb-5 pb-5">
+    <div class="row g-4">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-3 col-md-4 col-6">
+                    <div class="ref-box-card" title="@item.FirmaAdi">
+                        <img src="@item.LogoAdresi" alt="@item.FirmaAdi" />
+                        <span class="small fw-bold text-muted mt-2">@item.FirmaAdi</span>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center py-5">
+                <div class="alert alert-info d-inline-block px-4">
+                    Henüz referans marka logosu eklenmemiş.
+                </div>
+            </div>
+        }
+    </div>
+</div>

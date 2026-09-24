@@ -1,0 +1,117 @@
+﻿@model KurumsalWebSitesi.Models.Entities.Sayfa
+
+@{
+    ViewData["Title"] = "Yeni Sayfa Ekle";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h4 mb-0 text-gray-800">Yeni Sayfa Ekle</h2>
+    <a href="/Admin/Sayfa/Index" class="btn btn-secondary"><i class="fa-solid fa-arrow-left me-1"></i> Geri Dön</a>
+</div>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger shadow-sm">
+        <ul class="mb-0">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
+
+<form id="sayfaForm" action="/Admin/Sayfa/Ekle" method="post">
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <!-- Sol Taraf: Ana İçerik -->
+        <div class="col-md-8">
+            <div class="card mb-4 shadow-sm border-0">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="Baslik" class="form-label fw-bold">Sayfa Başlığı <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="Baslik" name="Baslik" value="@Model?.Baslik" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Icerik" class="form-label fw-bold">Sayfa İçeriği</label>
+                        <textarea id="Icerik" name="Icerik" class="form-control">@Model?.Icerik</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sağ Taraf: SEO ve Ayarlar -->
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm border-0">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="SeoUrl" class="form-label fw-bold">SEO URL (Slug) <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control bg-light" id="SeoUrl" name="SeoUrl" value="@(Model?.SeoUrl ?? "hakkimizda")" required>
+                        <small class="text-muted">Menünün sayfayı bulması için: <strong>hakkimizda</strong> olmalıdır.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="SeoBasligi" class="form-label fw-bold">SEO Başlığı (Title)</label>
+                        <input type="text" class="form-control" id="SeoBasligi" name="SeoBasligi" value="@Model?.SeoBasligi">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="SeoAciklamasi" class="form-label fw-bold">SEO Açıklaması (Description)</label>
+                        <textarea class="form-control" id="SeoAciklamasi" name="SeoAciklamasi" rows="3">@Model?.SeoAciklamasi</textarea>
+                    </div>
+
+                    <div class="mb-4 form-check form-switch mt-3">
+                        <input class="form-check-input" type="checkbox" role="switch" id="AktifMi" name="AktifMi" value="true" @(Model == null || Model.AktifMi ? "checked" : "")>
+                        <label class="form-check-label fw-bold" for="AktifMi">Sayfa Aktif Olsun Mu?</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2"><i class="fa-solid fa-floppy-disk me-1"></i> Kaydet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+    <style>
+        .ck-editor__editable_inline {
+            min-height: 400px;
+        }
+    </style>
+    <script>
+        let editorInstance;
+        ClassicEditor
+            .create(document.querySelector('#Icerik'))
+            .then(editor => {
+                editorInstance = editor;
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+        // Form submit edilmeden hemen önce CKEditor verisini textarea içine aktar
+        document.getElementById('sayfaForm').addEventListener('submit', function () {
+            if (editorInstance) {
+                document.querySelector('#Icerik').value = editorInstance.getData();
+            }
+        });
+
+        // Başlıktan otomatik SEO URL (Slug) oluşturma
+        document.getElementById('Baslik').addEventListener('keyup', function () {
+            var title = this.value;
+            var seourl = title.toLowerCase()
+                .replace(/ğ/g, 'g')
+                .replace(/ü/g, 'u')
+                .replace(/ş/g, 's')
+                .replace(/ı/g, 'i')
+                .replace(/ö/g, 'o')
+                .replace(/ç/g, 'c')
+                .replace(/[^a-z0-9-]/g, '-')
+                .replace(/-+/g, '-')
+                .replace(/^-|-$/g, '');
+            document.getElementById('SeoUrl').value = seourl;
+        });
+    </script>
+}

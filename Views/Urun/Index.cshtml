@@ -1,0 +1,268 @@
+@model List<KurumsalWebSitesi.Models.Entities.Urun>
+@{
+    ViewData["Title"] = "Ürünlerimiz";
+
+    // Dinamik olarak ürünlerin kategorilerini listele
+    var kategoriler = Model?
+        .Where(u => !string.IsNullOrWhiteSpace(u.Kategori))
+        .Select(u => u.Kategori.Trim())
+        .Distinct()
+        .ToList() ?? new List<string>();
+}
+
+<div class="py-5 bg-dark text-white text-center mb-4" style="background: radial-gradient(circle at center, #1e1b4b 0%, #0a0e27 100%);">
+    <div class="container py-4">
+        <h1 class="fw-bold display-5">Ürünlerimiz</h1>
+        <p class="text-white-50 mb-0">İşletmeniz için yüksek kaliteyle imal ettiğimiz kurumsal ürünler</p>
+    </div>
+</div>
+
+<div class="container mb-5 pb-5">
+    @if (TempData["Mesaj"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["Mesaj"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Kapat"></button>
+        </div>
+    }
+
+    <!-- KATEGORİ FİLTRELEME BUTONLARI -->
+    @if (kategoriler.Any())
+    {
+        <div class="d-flex justify-content-center flex-wrap gap-2 mb-5">
+            <button type="button" class="btn btn-urun-filter active" data-filter="all">Tümü</button>
+            @foreach (var kat in kategoriler)
+            {
+                var slug = kat.ToLower().Replace(" ", "-").Replace("ı", "i").Replace("ğ", "g").Replace("ü", "u").Replace("ş", "s").Replace("ö", "o").Replace("ç", "c");
+                <button type="button" class="btn btn-urun-filter" data-filter="@slug">@kat</button>
+            }
+        </div>
+    }
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row g-4" id="urunlerGrid">
+            @foreach (var item in Model)
+            {
+                var dosyaYolu = item.ResimAdresi ?? "";
+                var videoMu = dosyaYolu.EndsWith(".mp4", StringComparison.OrdinalIgnoreCase) ||
+                              dosyaYolu.EndsWith(".webm", StringComparison.OrdinalIgnoreCase);
+
+                var katSlug = !string.IsNullOrWhiteSpace(item.Kategori)
+                    ? item.Kategori.Trim().ToLower().Replace(" ", "-").Replace("ı", "i").Replace("ğ", "g").Replace("ü", "u").Replace("ş", "s").Replace("ö", "o").Replace("ç", "c")
+                    : "genel";
+
+                <div class="col-lg-4 col-md-6 urun-kart-item" data-category="@katSlug">
+                    <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden urun-hover-card">
+
+                        <!-- Medya Alanı (Video veya Görsel) + Kategori Rozeti -->
+                        <div class="position-relative" style="height: 240px; background-color: #0f172a; overflow: hidden;">
+                            @if (!string.IsNullOrEmpty(item.ResimAdresi))
+                            {
+                                @if (videoMu)
+                                {
+                                    <video autoplay muted loop playsinline class="w-100 h-100 object-fit-cover">
+                                        <source src="@item.ResimAdresi" type="video/mp4">
+                                    </video>
+                                }
+                                else
+                                {
+                                    <img src="@item.ResimAdresi" class="w-100 h-100 object-fit-cover" alt="@item.Ad" />
+                                }
+                            }
+                            else
+                            {
+                                <div class="w-100 h-100 d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-box-seam text-white-50 fs-1"></i>
+                                </div>
+                            }
+
+                            <!-- Görsel Üstü Kategori Rozeti -->
+                            <span class="position-absolute top-0 end-0 m-3 badge bg-dark bg-opacity-75 text-white px-3 py-2 rounded-pill fw-semibold shadow-sm" style="backdrop-filter: blur(4px);">
+                                <i class="bi bi-tag-fill me-1 text-info"></i> @(string.IsNullOrWhiteSpace(item.Kategori) ? "Ürün" : item.Kategori)
+                            </span>
+                        </div>
+
+                        <div class="card-body p-4 d-flex flex-column">
+                            <h5 class="card-title fw-bold text-dark mb-2">@item.Ad</h5>
+
+                            <!-- Açıklama Alanı -->
+                            <div class="card-text text-muted flex-grow-1 small mb-3">
+                                @if (!string.IsNullOrEmpty(item.Aciklama))
+                                {
+                                    @Html.Raw(item.Aciklama)
+                                }
+                                else
+                                {
+                                    <span>Bu ürün için henüz detaylı açıklama girilmedi.</span>
+                                }
+                            </div>
+
+                            <!-- Teknik Detaylar -->
+                            @if (!string.IsNullOrEmpty(item.TeknikDetaylar))
+                            {
+                                <div class="text-secondary small mb-3 border-top pt-2">
+                                    <div class="d-flex align-items-start gap-2">
+                                        <i class="bi bi-info-circle text-primary mt-1"></i>
+                                        <div class="flex-grow-1">
+                                            @Html.Raw(item.TeknikDetaylar)
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            <!-- Aksiyon Butonları -->
+                            <div class="d-flex gap-2 mt-auto pt-2">
+                                <button type="button"
+                                        class="btn btn-outline-primary w-50 btn-sm fw-bold d-flex align-items-center justify-content-center gap-1 rounded-pill"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#siparisModal"
+                                        data-urun-id="@item.Id"
+                                        data-urun-adi="@item.Ad">
+                                    <i class="bi bi-cart-check"></i> Sipariş Ver
+                                </button>
+
+                                <a href="https://wa.me/905375070410?text=@(Uri.EscapeDataString("Merhaba, '" + item.Ad + "' ürünü hakkında bilgi almak istiyorum."))"
+                                   target="_blank"
+                                   class="btn btn-outline-success w-50 btn-sm fw-bold d-flex align-items-center justify-content-center gap-1 rounded-pill">
+                                    <i class="bi bi-whatsapp"></i> Bilgi Al
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <div class="mb-3">
+                <i class="bi bi-boxes fs-1 text-muted"></i>
+            </div>
+            <h4 class="text-secondary fw-bold">Henüz Ürün Eklenmedi</h4>
+            <p class="text-muted">Admin panelindeki <strong>Ürünler</strong> sekmesinden ürün eklediğinizde burada otomatik listelenecektir.</p>
+            <a href="/" class="btn btn-primary btn-sm px-4 mt-2 rounded-pill">Ana Sayfaya Dön</a>
+        </div>
+    }
+</div>
+
+<!-- SİPARİŞ & TEKLİF ALMA MODALI -->
+<div class="modal fade" id="siparisModal" tabindex="-1" aria-labelledby="siparisModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header bg-light border-bottom">
+                <h5 class="modal-title fw-bold text-dark" id="siparisModalLabel">
+                    <i class="bi bi-bag-check text-primary me-2"></i>Sipariş &amp; Teklif Formu
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+
+            <form asp-controller="Urun" asp-action="SiparisGonder" method="post">
+                <div class="modal-body p-4">
+                    <input type="hidden" id="modalUrunId" name="UrunId" />
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-secondary">Seçilen Ürün</label>
+                        <input type="text" id="modalUrunAdi" name="UrunAdi" class="form-control bg-light fw-bold text-primary" readonly />
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-secondary">Adınız Soyadınız</label>
+                            <input type="text" name="AdSoyad" class="form-control" placeholder="Örn: Ahmet Yılmaz" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-secondary">Telefon Numaranız</label>
+                            <input type="tel" name="Telefon" class="form-control" placeholder="05XX XXX XX XX" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-secondary">E-Posta (İsteğe Bağlı)</label>
+                        <input type="email" name="Eposta" class="form-control" placeholder="ornek@mail.com" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-secondary">İstediğiniz Ölçü / Adet / Açıklama</label>
+                        <textarea name="Mesaj" class="form-control" rows="3" placeholder="İstediğiniz ebat, montaj durumu, ışıklı/ışıksız tercihi vb..."></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer bg-light border-top">
+                    <button type="button" class="btn btn-secondary btn-sm rounded-pill px-3" data-bs-dismiss="modal">Vazgeç</button>
+                    <button type="submit" class="btn btn-primary btn-sm px-4 fw-bold rounded-pill">Talebi İlet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Filtre Butonları */
+    .btn-urun-filter {
+        border-radius: 50px;
+        padding: 8px 22px;
+        font-weight: 600;
+        font-size: 0.88rem;
+        background-color: #ffffff;
+        color: #475569;
+        border: 1px solid #cbd5e1;
+        transition: all 0.2s ease;
+    }
+    .btn-urun-filter:hover, .btn-urun-filter.active {
+        background-color: #0d6efd;
+        color: #ffffff;
+        border-color: #0d6efd;
+        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.25);
+    }
+
+    .urun-hover-card {
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .urun-hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.08) !important;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Modal veri aktarımı
+            var siparisModal = document.getElementById('siparisModal');
+            if (siparisModal) {
+                siparisModal.addEventListener('show.bs.modal', function (event) {
+                    var button = event.relatedTarget;
+                    var urunId = button.getAttribute('data-urun-id');
+                    var urunAdi = button.getAttribute('data-urun-adi');
+
+                    document.getElementById('modalUrunId').value = urunId;
+                    document.getElementById('modalUrunAdi').value = urunAdi;
+                });
+            }
+
+            // Kategori filtreleme tıklama olayı
+            const filterBtns = document.querySelectorAll('.btn-urun-filter');
+            const items = document.querySelectorAll('.urun-kart-item');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const selectedFilter = this.getAttribute('data-filter');
+
+                    items.forEach(item => {
+                        const itemCategory = item.getAttribute('data-category');
+                        if (selectedFilter === 'all' || itemCategory === selectedFilter) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+}

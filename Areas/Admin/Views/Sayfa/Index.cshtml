@@ -1,0 +1,194 @@
+﻿@model IEnumerable<KurumsalWebSitesi.Models.Entities.Sayfa>
+
+@{
+    ViewData["Title"] = "Sayfa Yönetimi";
+}
+
+<style>
+    /* Kurumsal Renk Dokunuşları */
+    .table-corporate thead th {
+        background-color: #1A2530 !important;
+        color: #ffffff !important;
+        font-weight: 500;
+        border-bottom: none;
+    }
+
+    .btn-corporate {
+        background-color: #3498DB;
+        color: #fff;
+        border: none;
+    }
+
+        .btn-corporate:hover {
+            background-color: #2980B9;
+            color: #fff;
+        }
+
+    /* Mobil Kart Tasarımı İçin Özel Ayarlar */
+    .mobile-card {
+        background: #fff;
+        border: 1px solid #e3e6f0;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .mobile-card-header {
+        background-color: #F4F6F9;
+        border-bottom: 1px solid #e3e6f0;
+        padding: 12px 15px;
+        font-weight: bold;
+        color: #1A2530;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .mobile-card-body {
+        padding: 15px;
+    }
+
+    .mobile-card-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        border-bottom: 1px dashed #e3e6f0;
+        padding-bottom: 8px;
+    }
+
+        .mobile-card-row:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+    .mobile-card-label {
+        color: #6c757d;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .mobile-card-value {
+        font-size: 0.9rem;
+        color: #333;
+        text-align: right;
+    }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h4 mb-0" style="color: #1A2530; font-weight: 600;">Sayfalar</h2>
+    <a href="/Admin/Sayfa/Ekle" class="btn btn-corporate shadow-sm"><i class="fa-solid fa-plus me-1"></i> Yeni Sayfa Ekle</a>
+</div>
+
+<!-- MASAÜSTÜ GÖRÜNÜMÜ (Geniş Ekranlar İçin Tablo) -->
+<div class="d-none d-md-block table-responsive shadow-sm rounded">
+    <table class="table table-hover align-middle mb-0 table-corporate">
+        <thead>
+            <tr>
+                <th class="py-3 px-4">Başlık</th>
+                <th class="py-3 px-4">SEO URL</th>
+                <th class="py-3 px-4 text-center">Durum</th>
+                <th class="py-3 px-4">Oluşturulma Tarihi</th>
+                <th class="py-3 px-4 text-end">İşlemler</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="fw-medium px-4" style="color: #1A2530;">@item.Baslik</td>
+                        <td class="px-4"><span class="badge bg-light text-dark border">@item.SeoUrl</span></td>
+                        <td class="text-center px-4">
+                            @if (item.AktifMi)
+                            {
+                                <span class="badge" style="background-color: #2ecc71;">Aktif</span>
+                            }
+                            else
+                            {
+                                <span class="badge" style="background-color: #e74c3c;">Pasif</span>
+                            }
+                        </td>
+                        <td class="px-4 text-muted">@item.OlusturulmaTarihi.ToString("dd.MM.yyyy")</td>
+                        <td class="text-end px-4">
+                            <a href="/Admin/Sayfa/Duzenle/@item.Id" class="btn btn-sm btn-outline-primary" title="Düzenle">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                            <form action="/Admin/Sayfa/Sil" method="post" class="d-inline" onsubmit="return confirm('Bu sayfayı silmek istediğinize emin misiniz?');">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Sil">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-5">
+                        <i class="fa-regular fa-folder-open fs-1 mb-3 d-block text-gray-300"></i>
+                        Henüz hiç sayfa eklenmemiş. Yeni bir sayfa ekleyerek başlayın.
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- MOBİL GÖRÜNÜM (Küçük Ekranlar İçin Kart Yapısı) -->
+<div class="d-block d-md-none">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var item in Model)
+        {
+            <div class="mobile-card">
+                <div class="mobile-card-header">
+                    <span class="text-truncate pe-2">@item.Baslik</span>
+                    <div>
+                        @if (item.AktifMi)
+                        {
+                            <span class="badge" style="background-color: #2ecc71;">Aktif</span>
+                        }
+                        else
+                        {
+                            <span class="badge" style="background-color: #e74c3c;">Pasif</span>
+                        }
+                    </div>
+                </div>
+                <div class="mobile-card-body">
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">SEO URL</span>
+                        <span class="mobile-card-value text-muted">@item.SeoUrl</span>
+                    </div>
+                    <div class="mobile-card-row">
+                        <span class="mobile-card-label">Oluşturulma</span>
+                        <span class="mobile-card-value">@item.OlusturulmaTarihi.ToString("dd.MM.yyyy")</span>
+                    </div>
+                    <div class="mt-3 d-flex justify-content-end gap-2">
+                        <a href="/Admin/Sayfa/Duzenle/@item.Id" class="btn btn-sm btn-outline-primary flex-grow-1">
+                            <i class="fa-solid fa-pen-to-square me-1"></i> Düzenle
+                        </a>
+                        <form action="/Admin/Sayfa/Sil" method="post" class="flex-grow-1 d-flex" onsubmit="return confirm('Bu sayfayı silmek istediğinize emin misiniz?');">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger w-100">
+                                <i class="fa-solid fa-trash me-1"></i> Sil
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="text-center text-muted py-5 bg-white border rounded shadow-sm">
+            <i class="fa-regular fa-folder-open fs-1 mb-3 d-block"></i>
+            Henüz hiç sayfa eklenmemiş.
+        </div>
+    }
+</div>

@@ -1,0 +1,93 @@
+﻿@model KurumsalWebSitesi.Models.Entities.Proje
+@{
+    ViewData["Title"] = "Proje Yönetimi";
+    var isNew = Model == null || Model.Id == 0;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h4 mb-0 text-dark fw-bold">@(isNew ? "Yeni Proje Ekle" : "Proje Düzenle")</h2>
+    <a href="/Admin/Proje/Index" class="btn btn-secondary"><i class="fa-solid fa-arrow-left me-1"></i> Geri Dön</a>
+</div>
+
+<form id="projeForm" action="/Admin/Proje/@(isNew ? "Ekle" : "Duzenle")" method="post" enctype="multipart/form-data" class="card p-4 shadow-sm border-0">
+    @Html.AntiForgeryToken()
+
+    @if (!isNew)
+    {
+        <input type="hidden" name="Id" value="@Model.Id" />
+        <input type="hidden" name="KapakResmi" value="@Model.KapakResmi" />
+    }
+
+    <div class="row g-3 mb-3">
+        <div class="col-md-7">
+            <label class="fw-bold">Başlık <span class="text-danger">*</span></label>
+            <input name="Baslik" class="form-control" value="@(isNew ? "" : Model?.Baslik)" placeholder="Örn: Araç Kaplama Projesi" required />
+        </div>
+        <div class="col-md-5">
+            <label class="fw-bold">Kategori</label>
+            <input name="Kategori" class="form-control" list="projeKategoriListesi" placeholder="Örn: Araç Giydirme" value="@(isNew ? "Genel" : (Model?.Kategori ?? "Genel"))" />
+            <datalist id="projeKategoriListesi">
+                <option value="Araç Giydirme" />
+                <option value="Dış Cephe Giydirme" />
+                <option value="Işıklı Tabela" />
+                <option value="Totem Tabela" />
+                <option value="Fuar Standı" />
+            </datalist>
+            <small class="text-muted">Listeden seçebilir veya yeni kategori yazabilirsiniz.</small>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="fw-bold">İçerik</label>
+        <textarea id="Icerik" name="Icerik" class="form-control">@(isNew ? "" : Model?.Icerik)</textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="fw-bold">Görsel / Video @(isNew ? "" : "(Değiştirmek için seçin)")</label>
+        <input type="file" name="kapakResmi" class="form-control" accept="image/*,video/mp4,video/webm" />
+        @if (!isNew && !string.IsNullOrEmpty(Model?.KapakResmi))
+        {
+            <div class="mt-2">
+                <img src="@Model.KapakResmi" style="width:120px;" class="rounded border" />
+            </div>
+        }
+    </div>
+
+    <div class="mb-4 form-check form-switch">
+        <input class="form-check-input" type="checkbox" name="AktifMi" value="true"
+               @(isNew || (Model != null && Model.AktifMi) ? "checked" : "") id="AktifMi">
+        <label class="form-check-label fw-bold" for="AktifMi">Aktif (Yayında)</label>
+    </div>
+
+    <div>
+        <button type="submit" class="btn btn-primary px-4">
+            <i class="fa-solid fa-floppy-disk me-1"></i> Kaydet
+        </button>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+    <style>
+        .ck-editor__editable_inline {
+            min-height: 200px;
+        }
+    </style>
+    <script>
+        let editorInstance;
+        ClassicEditor
+            .create(document.querySelector('#Icerik'))
+            .then(editor => {
+                editorInstance = editor;
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+        document.getElementById('projeForm').addEventListener('submit', function () {
+            if (editorInstance) {
+                document.querySelector('#Icerik').value = editorInstance.getData();
+            }
+        });
+    </script>
+}

@@ -1,0 +1,196 @@
+﻿@model KurumsalWebSitesi.Areas.Admin.Models.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Kontrol Paneli";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h4 mb-0 text-dark fw-bold">Kontrol Paneli</h2>
+    <div class="text-muted small"><i class="fa-solid fa-clock me-1"></i> Son Güncelleme: @DateTime.Now.ToString("HH:mm")</div>
+</div>
+
+<!-- 1. SATIR: SİTE İÇERİK ÖZETİ (KPI) -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card shadow-sm border-0 h-100 py-2" style="border-left: 4px solid #e74a3b;">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs fw-bold text-danger text-uppercase mb-1">Yeni Mesajlar</div>
+                        <div class="h3 mb-0 fw-bold text-dark">@Model.OkunmamisMesajSayisi</div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="bg-danger bg-opacity-10 text-danger p-3 rounded"><i class="fa-solid fa-envelope fs-4"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card shadow-sm border-0 h-100 py-2" style="border-left: 4px solid #4e73df;">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs fw-bold text-primary text-uppercase mb-1">Yayındaki Ürünler</div>
+                        <div class="h3 mb-0 fw-bold text-dark">@Model.ToplamUrunSayisi</div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="bg-primary bg-opacity-10 text-primary p-3 rounded"><i class="fa-solid fa-box-open fs-4"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card shadow-sm border-0 h-100 py-2" style="border-left: 4px solid #1cc88a;">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs fw-bold text-success text-uppercase mb-1">Aktif Projeler</div>
+                        <div class="h3 mb-0 fw-bold text-dark">@Model.ToplamProjeSayisi</div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="bg-success bg-opacity-10 text-success p-3 rounded"><i class="fa-solid fa-project-diagram fs-4"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card shadow-sm border-0 h-100 py-2" style="border-left: 4px solid #f6c23e;">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs fw-bold text-warning text-uppercase mb-1">Bekleyen Başvurular</div>
+                        <div class="h3 mb-0 fw-bold text-dark">@Model.BekleyenBasvuruSayisi</div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="bg-warning bg-opacity-10 text-warning p-3 rounded"><i class="fa-solid fa-user-tie fs-4"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- SOL SÜTUN: SEO VE PERFORMANS (GSC) -->
+    <div class="col-lg-7 mb-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 fw-bold text-dark"><i class="fa-brands fa-google text-primary me-2"></i>Google Arama Performansı (Son 30 Gün)</h6>
+            </div>
+            <div class="card-body">
+                @if (Model.EnIyiSorgular != null && Model.EnIyiSorgular.Any())
+                {
+                    <!-- SEO Mini Özet Kartları -->
+                    <div class="row text-center mb-4">
+                        <div class="col-3 border-end">
+                            <span class="text-muted d-block small fw-bold">Toplam Tıklama</span>
+                            <span class="h5 fw-bold text-primary">@Model.ToplamTiklama.ToString("N0")</span>
+                        </div>
+                        <div class="col-3 border-end">
+                            <span class="text-muted d-block small fw-bold">Gösterim</span>
+                            <span class="h5 fw-bold text-dark">@Model.ToplamGosterim.ToString("N0")</span>
+                        </div>
+                        <div class="col-3 border-end">
+                            <span class="text-muted d-block small fw-bold">Ort. Sıra</span>
+                            <span class="h5 fw-bold text-success">@Model.OrtalamaPozisyon.ToString("0.0")</span>
+                        </div>
+                        <div class="col-3">
+                            <span class="text-muted d-block small fw-bold">Tıklama Oranı</span>
+                            <span class="h5 fw-bold text-info">%@Model.OrtalamaCtr.ToString("0.00")</span>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Arama Terimi</th>
+                                    <th class="text-center">Tıklama</th>
+                                    <th class="text-center">Gösterim</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var row in Model.EnIyiSorgular)
+                                {
+                                    <tr>
+                                        <td class="fw-medium">@row.Keys[0]</td>
+                                        <td class="text-center text-primary fw-bold">@row.Clicks</td>
+                                        <td class="text-center text-muted">@row.Impressions</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center p-5">
+                        <i class="fa-solid fa-chart-line fs-1 mb-3 text-secondary opacity-50"></i>
+                        <h5>Veri Bekleniyor</h5>
+                        <p class="text-muted small">Google Search Console API ayarlarınızı yapılandırın veya verilerin toplanmasını bekleyin.</p>
+                        <a href="/Admin/SiteAyari/Index" class="btn btn-outline-primary btn-sm">Ayarlara Git</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Son Eklenen Ürünler Kartı -->
+    <div class="card shadow-sm border-0 h-100">
+        <div class="card-header bg-white py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 fw-bold text-dark"><i class="fa-solid fa-tags text-success me-2"></i>Son Eklenen Ürünler</h6>
+            <a href="/Admin/Urunler" class="btn btn-sm btn-primary"><i class="fa-solid fa-plus me-1"></i> Yeni Ürün</a>
+        </div>
+        <div class="card-body p-0">
+            <ul class="list-group list-group-flush">
+                @if (Model.SonEklenenUrunler != null && Model.SonEklenenUrunler.Any())
+                {
+                    foreach (var urun in Model.SonEklenenUrunler)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                            <div class="d-flex align-items-center overflow-hidden">
+                                <!-- Ürün Görseli (Thumbnail) -->
+                                <div class="me-3 flex-shrink-0">
+                                    @if (!string.IsNullOrEmpty(urun.ResimAdresi))
+                                    {
+                                        <img src="@urun.ResimAdresi" alt="@urun.Ad" class="rounded border shadow-sm" style="width: 48px; height: 48px; object-fit: cover;" />
+                                    }
+                                    else
+                                    {
+                                        <div class="rounded border bg-light text-muted d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px;">
+                                            <i class="fa-solid fa-box fs-5"></i>
+                                        </div>
+                                    }
+                                </div>
+                                <!-- Ürün Bilgileri -->
+                                <div class="overflow-hidden">
+                                    <h6 class="mb-1 fw-bold text-dark text-truncate">@urun.Ad</h6>
+                                    <small class="text-muted d-block text-truncate" style="max-width: 220px;" title="@urun.Aciklama">
+                                        @(string.IsNullOrEmpty(urun.Aciklama) ? "Açıklama girilmemiş." : urun.Aciklama)
+                                    </small>
+                                </div>
+                            </div>
+                            <!-- Hızlı İşlem Butonu -->
+                            <a href="/Admin/Urunler/Duzenle/@urun.Id" class="btn btn-sm btn-light border text-primary rounded-circle shadow-sm ms-2 flex-shrink-0" title="Düzenle">
+                                <i class="fa-solid fa-pen"></i>
+                            </a>
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li class="list-group-item p-5 text-center text-muted border-0">
+                        <i class="fa-solid fa-box-open fs-2 mb-3 opacity-50"></i>
+                        <span class="d-block">Sisteme henüz ürün eklenmemiş.</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

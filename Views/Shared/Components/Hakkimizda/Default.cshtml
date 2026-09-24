@@ -1,0 +1,158 @@
+@model KurumsalWebSitesi.Models.Entities.Sayfa
+
+<section class="about-dark-section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <span class="about-tag">// HAKKIMIZDA</span>
+                <h2 class="display-5 fw-bold text-white mt-2 mb-3">@(Model != null ? Model.Baslik : "Biz Kimiz")</h2>
+                <h5 class="fw-bold text-white mb-3" style="letter-spacing: -0.2px;">İşletmeniz İçin Çalışan Bir Ekibiz !</h5>
+                <div class="about-text-clear mb-4">
+                    @if (Model != null && !string.IsNullOrEmpty(Model.Icerik))
+                    {
+                        @Html.Raw(Model.Icerik)
+                    }
+                    else
+                    {
+                        <p class="mb-0">Bizler sektörde işletmelerin dijital ve kurumsal imalat süreçlerinde ihtiyaç duydukları tüm çözümleri tek çatı altında sunan bir ekibiz.</p>
+                    }
+                </div>
+                <p class="fw-bold text-white fs-6">İşinizi İşimiz Gibi Görmeyi En Temel Değerimiz Olarak Görüyoruz!</p>
+            </div>
+            <div class="col-lg-6">
+                <div class="about-visual-box">
+                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80" alt="Ekip Çalışması" />
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- MÜŞTERİ GÖRÜŞLERİ (SINIRSIZ YORUM DESTEKLİ & OTOMATİK KAYAN SLIDER) -->
+<section class="reviews-section py-5">
+    <div class="container py-4">
+        <div class="text-center mb-5">
+            <span class="about-tag">// MÜŞTERİLERİMİZİN</span>
+            <h2 class="fw-bold display-6 mt-2 text-white">Bizim Hakkımızdaki Görüşleri</h2>
+        </div>
+
+        <div id="reviewsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4500">
+            <!-- Alt Noktalar (Indicators) -->
+            <div class="carousel-indicators custom-indicators">
+                <button type="button" data-bs-target="#reviewsCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
+                <button type="button" data-bs-target="#reviewsCarousel" data-bs-slide-to="1"></button>
+            </div>
+
+            <div class="carousel-inner pb-5">
+                <!-- 1. SLAYT (2 Yorum) -->
+                <div class="carousel-item active">
+                    <div class="row g-4 justify-content-center">
+                        <div class="col-md-6 col-lg-5">
+                            <div class="review-card h-100">
+                                <div class="review-client-header">
+                                    <div class="review-avatar">ÇE</div>
+                                    <div>
+                                        <h6 class="fw-bold mb-0 text-white">Çırpan Ev</h6>
+                                        <small class="text-white-50">E. ÇIRPAN</small>
+                                    </div>
+                                </div>
+                                <p class="text-secondary mb-0">"Projeye başladığımız ilk günden bu yana yanımızda olan ekibe teşekkür ederiz, bizlere her zaman sektörün öncüsü olmamızda rehberlik ettiler!"</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-5">
+                            <div class="review-card h-100">
+                                <div class="review-client-header">
+                                    <div class="review-avatar text-success">EC</div>
+                                    <div>
+                                        <h6 class="fw-bold mb-0 text-white">Elif Candar</h6>
+                                        <small class="text-white-50">E. CANDAR</small>
+                                    </div>
+                                </div>
+                                <p class="text-secondary mb-0">"Kurumsal ihtiyaçlarımızda hızlı geri dönüşleri ve titiz çalışma prensipleriyle güvenimizi tam anlamıyla kazandılar."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. SLAYT (Yeni Eklenecek Yorumlar İçin Hazır Alan) -->
+                <div class="carousel-item">
+                    <div class="row g-4 justify-content-center">
+                        <div class="col-md-6 col-lg-5">
+                            <div class="review-card h-100">
+                                <div class="review-client-header">
+                                    <div class="review-avatar text-info">AK</div>
+                                    <div>
+                                        <h6 class="fw-bold mb-0 text-white">Atlas Mimarlık</h6>
+                                        <small class="text-white-50">A. KAYA</small>
+                                    </div>
+                                </div>
+                                <p class="text-secondary mb-0">"Tabela ve dış cephe giydirme çalışmalarında gösterdikleri işçilik kalitesi tek kelimeyle kusursuz. Zamanında teslimat için ayrıca teşekkürler."</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-5">
+                            <div class="review-card h-100">
+                                <div class="review-client-header">
+                                    <div class="review-avatar text-warning">MY</div>
+                                    <div>
+                                        <h6 class="fw-bold mb-0 text-white">Yılmaz Teknoloji</h6>
+                                        <small class="text-white-50">M. YILMAZ</small>
+                                    </div>
+                                </div>
+                                <p class="text-secondary mb-0">"Işıklı pleksi kutu harf siparişimiz tam istediğimiz kalitede üretildi. Montaj ekibinin titizliği ve profesyonelliği bizi çok memnun etti."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sağ ve Sol Kontrol Okları -->
+            <button class="carousel-control-prev custom-nav-btn" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="prev">
+                <i class="bi bi-chevron-left fs-4"></i>
+            </button>
+            <button class="carousel-control-next custom-nav-btn" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="next">
+                <i class="bi bi-chevron-right fs-4"></i>
+            </button>
+        </div>
+    </div>
+</section>
+
+<style>
+    .custom-indicators {
+        bottom: 0px !important;
+    }
+    .custom-indicators [data-bs-target] {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.3);
+        border: none;
+        margin: 0 5px;
+        transition: all 0.3s ease;
+    }
+    .custom-indicators .active {
+        width: 25px;
+        border-radius: 20px;
+        background-color: #00d2ff !important;
+    }
+    .custom-nav-btn {
+        width: 45px;
+        height: 45px;
+        top: 45%;
+        border-radius: 50%;
+        background: rgba(0, 210, 255, 0.1);
+        border: 1px solid rgba(0, 210, 255, 0.25);
+        color: #00d2ff;
+        opacity: 0.8;
+        transition: all 0.2s ease;
+    }
+    .custom-nav-btn:hover {
+        background: #00d2ff;
+        color: #060919;
+        opacity: 1;
+    }
+    @@media (max-width: 768px) {
+        .custom-nav-btn {
+            display: none;
+        }
+    }
+</style>
