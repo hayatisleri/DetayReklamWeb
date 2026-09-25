@@ -1,0 +1,50 @@
+@model KurumsalWebSitesi.Models.Entities.Haber
+
+@{
+    ViewData["Title"] = Model.Baslik;
+}
+
+<div class="py-5" style="background-color: #0b0f19; min-height: 85vh; color: #e2e8f0;">
+    <div class="container py-4">
+        <!-- Üst Kısım / Geri Dön Butonu -->
+        <div class="mb-4">
+            <a href="/Haber" class="btn btn-sm px-3 py-2 fw-semibold" style="background: rgba(255, 183, 3, 0.15); color: #FFB703; border: 1px solid rgba(255, 183, 3, 0.3); border-radius: 6px;">
+                <i class="bi bi-arrow-left me-1"></i> Tüm Haberlere Dön
+            </a>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <article class="p-4 p-md-5 rounded-4 shadow-sm" style="background: #141923; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <!-- Tarih ve Başlık -->
+                    <div class="mb-4 border-bottom pb-4" style="border-color: rgba(255, 255, 255, 0.08) !important;">
+                        <span class="badge mb-2 px-3 py-2 rounded-pill fw-semibold" style="background: rgba(255, 183, 3, 0.15); color: #FFB703;">
+                            <i class="bi bi-calendar3 me-1"></i> @Model.OlusturulmaTarihi.ToString("dd MMMM yyyy")
+                        </span>
+                        <h1 class="fw-bold display-6 text-white mt-2">@Model.Baslik</h1>
+
+                        @if (!string.IsNullOrWhiteSpace(Model.Ozet))
+                        {
+                            <p class="fs-5 text-warning opacity-75 mt-3 mb-0 fst-italic">
+                                @Model.Ozet
+                            </p>
+                        }
+                    </div>
+
+                    <!-- Kapak Görseli -->
+                    @if (!string.IsNullOrEmpty(Model.ResimAdresi))
+                    {
+                        <div class="mb-5 rounded-3 overflow-hidden text-center" style="max-height: 480px; background: #000;">
+                            <img src="@Model.ResimAdresi" alt="@Model.Baslik" class="img-fluid w-100 object-fit-cover" style="max-height: 480px;" />
+                        </div>
+                    }
+
+                    <!-- Detay İçeriği -->
+                    <div class="haber-icerik lh-lg fs-5" style="color: #cbd5e1;">
+                        @Html.Raw(Model.Icerik)
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+</div>

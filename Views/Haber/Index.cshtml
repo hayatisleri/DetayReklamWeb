@@ -1,0 +1,56 @@
+@model List<KurumsalWebSitesi.Models.Entities.Haber>
+
+@{
+    ViewData["Title"] = "Blog & Haberler";
+}
+
+<div class="py-5" style="background-color: #0b0f19; min-height: 80vh;">
+    <div class="container py-4">
+        <div class="text-center mb-5">
+            <span class="badge px-3 py-2 rounded-pill fw-semibold mb-2" style="background: rgba(255, 183, 3, 0.15); color: #FFB703; border: 1px solid rgba(255, 183, 3, 0.4);">GÜNCEL YAZILAR</span>
+            <h1 class="fw-bold display-6 text-white">Blog ve Haberler</h1>
+            <p class="text-white-50">Sektörden son gelişmeler, duyurular ve bilgilendirici içerikler.</p>
+        </div>
+
+        <div class="row g-4">
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var haber in Model)
+                {
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 rounded-4 overflow-hidden border-0 shadow-sm" style="background: #141923;">
+                            <div style="height: 220px; overflow: hidden; background: #000;">
+                                @if (!string.IsNullOrEmpty(haber.ResimAdresi))
+                                {
+                                    <img src="@haber.ResimAdresi" class="w-100 h-100 object-fit-cover" alt="@haber.Baslik" />
+                                }
+                                else
+                                {
+                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white-50">
+                                        <i class="bi bi-newspaper fs-1" style="color: #FFB703;"></i>
+                                    </div>
+                                }
+                            </div>
+                            <div class="card-body p-4 d-flex flex-column">
+                                <small class="text-muted mb-2"><i class="bi bi-calendar3 me-1"></i> @haber.OlusturulmaTarihi.ToString("dd.MM.yyyy")</small>
+                                <h4 class="fw-bold text-white mb-3">@haber.Baslik</h4>
+                                <p class="text-white-50 small flex-grow-1">
+                                    @(haber.Ozet?.Length > 120 ? haber.Ozet.Substring(0, 120) + "..." : haber.Ozet)
+                                </p>
+                                <a href="/Haber/Detay/@(string.IsNullOrEmpty(haber.SeoUrl) ? haber.Id.ToString() : haber.SeoUrl)" class="btn w-100 py-2 fw-bold mt-3" style="background: #FFB703; color: #0b0f19; border-radius: 6px;">
+                                    Devamını Oku <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center py-5">
+                    <p class="text-white-50 fs-5">Henüz eklenmiş bir blog yazısı bulunmamaktadır.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

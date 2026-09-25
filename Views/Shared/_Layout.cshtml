@@ -3,6 +3,9 @@
     var dinamikHizmetler = DbContext.Hizmetler.Where(h => h.AktifMi).OrderBy(h => h.Sira).ToList();
     var dinamikSiteAyari = DbContext.SiteAyarlari.FirstOrDefault();
 
+    // Admin panelindeki Dinamik Menü Yönetimi'nden aktif menüleri sırasıyla çekiyoruz
+    var dinamikMenuler = DbContext.Menuler.Where(m => m.AktifMi).OrderBy(m => m.Sira).ToList();
+
     var telefonMetni = !string.IsNullOrWhiteSpace(dinamikSiteAyari?.TelefonNumarasi) ? dinamikSiteAyari.TelefonNumarasi : "+90 (537) 507 04 10";
     var telefonLink = telefonMetni.Replace(" ", "").Replace("(", "").Replace(")", "").Replace("-", "");
     var mailMetni = !string.IsNullOrWhiteSpace(dinamikSiteAyari?.EpostaAdresi) ? dinamikSiteAyari.EpostaAdresi : "info@detayreklam.com";
@@ -201,7 +204,7 @@
             background: transparent !important;
         }
 
-        /* AÇILIR MENÜ (HİZMETLERİMİZ) */
+        /* AÇILIR MENÜ */
         .dropdown-menu-nt {
             background: #ffffff !important;
             border-radius: 8px;
@@ -426,11 +429,7 @@
             transform: translateY(-3px);
         }
 
-        /* ==========================================================================
-           HEDEF ODAKLI VE GÜVENLİ DETAY REKLAM SARI DÜZELTMELERİ
-           ========================================================================== */
-
-        /* Mavi Butonlar */
+        /* Sarı Tema Uyarlamaları */
         [class*="btn-cyan"],
         .btn-card-cyan,
         a.btn-info {
@@ -447,7 +446,6 @@
             color: #000000 !important;
         }
 
-        /* Filtre Butonları */
         .filter-btn.active,
         .portfolio-filter button.active,
         .nav-pills .nav-link.active {
@@ -457,7 +455,6 @@
             font-weight: 800 !important;
         }
 
-        /* Slider Okları ve Noktaları */
         .slick-prev, .slick-next,
         .owl-prev, .owl-next {
             color: #FFB703 !important;
@@ -469,7 +466,6 @@
             background-color: #FFB703 !important;
         }
 
-        /* Tabela Rozetleri */
         .product-tag,
         .card .badge.bg-info {
             background-color: #FFB703 !important;
@@ -533,7 +529,7 @@
         }
     </div>
 
-    <!-- ÜST MENÜ: 5 BAŞLIK -->
+    <!-- ÜST MENÜ: TAMAMEN DİNAMİK -->
     <nav class="navbar navbar-expand-xl navbar-nt sticky-top">
         <div class="container-fluid px-lg-5">
             <a class="navbar-brand-nt me-4" href="/">
@@ -553,41 +549,44 @@
                 <i class="bi bi-list fs-2" style="color: var(--nt-accent);"></i>
             </button>
 
-            <!-- MASAÜSTÜ MENÜ -->
+            <!-- MASAÜSTÜ MENÜ (DİNAMİK) -->
             <div class="collapse navbar-collapse d-none d-xl-flex" id="navNt">
                 <ul class="navbar-nav mx-auto mb-2 mb-xl-0 align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Anasayfa</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/Sayfa/hakkimizda">Hakkımızda</a>
-                    </li>
-                    <li class="nav-item dropdown-hover">
-                        <a class="nav-link" href="/#cozumler">
-                            Hizmetlerimiz <i class="bi bi-caret-down-fill ms-1" style="font-size: 10px;"></i>
-                        </a>
-                        <div class="dropdown-menu-nt">
-                            @if (dinamikHizmetler.Any())
+                    @if (dinamikMenuler != null && dinamikMenuler.Any())
+                    {
+                        @foreach (var menu in dinamikMenuler)
+                        {
+                            @if (menu.Baslik.ToLower().Contains("hizmet"))
                             {
-                                @foreach (var h in dinamikHizmetler)
-                                {
-                                    <a href="/Hizmet/Detay/@h.Id">@h.Baslik <i class="bi bi-caret-right-fill"></i></a>
-                                }
+                                <li class="nav-item dropdown-hover">
+                                    <a class="nav-link" href="@menu.Url">
+                                        @menu.Baslik <i class="bi bi-caret-down-fill ms-1" style="font-size: 10px;"></i>
+                                    </a>
+                                    <div class="dropdown-menu-nt">
+                                        @if (dinamikHizmetler.Any())
+                                        {
+                                            @foreach (var h in dinamikHizmetler)
+                                            {
+                                                <a href="/Hizmet/Detay/@h.Id">@h.Baslik <i class="bi bi-caret-right-fill"></i></a>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <a href="/#cozumler">Işıklı Tabela <i class="bi bi-caret-right-fill"></i></a>
+                                            <a href="/#cozumler">Kutu Harf Sistemleri <i class="bi bi-caret-right-fill"></i></a>
+                                            <a href="/#cozumler">Totem & Pilon <i class="bi bi-caret-right-fill"></i></a>
+                                        }
+                                    </div>
+                                </li>
                             }
                             else
                             {
-                                <a href="/#cozumler">Işıklı Tabela <i class="bi bi-caret-right-fill"></i></a>
-                                <a href="/#cozumler">Kutu Harf Sistemleri <i class="bi bi-caret-right-fill"></i></a>
-                                <a href="/#cozumler">Totem & Pilon <i class="bi bi-caret-right-fill"></i></a>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@menu.Url">@menu.Baslik</a>
+                                </li>
                             }
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/Proje">Referanslar</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/Iletisim">İletişim</a>
-                    </li>
+                        }
+                    }
                 </ul>
 
                 <div class="d-flex align-items-center ms-2">
@@ -597,7 +596,7 @@
         </div>
     </nav>
 
-    <!-- MOBİL MENÜ (OFFCANVAS) -->
+    <!-- MOBİL MENÜ (OFFCANVAS - TAMAMEN DİNAMİK) -->
     <div class="offcanvas offcanvas-start offcanvas-start-drawer d-xl-none" tabindex="-1" id="mobileDrawer" aria-labelledby="mobileDrawerLabel">
         <div class="offcanvas-header border-bottom border-secondary border-opacity-25 py-3">
             <h5 class="offcanvas-title fw-bold text-white d-flex align-items-center gap-2" id="mobileDrawerLabel">
@@ -609,43 +608,38 @@
 
         <div class="offcanvas-body p-0 d-flex flex-column justify-content-between">
             <div class="drawer-menu-links py-2">
-                <a href="/" class="drawer-nav-link">
-                    <span>Anasayfa</span>
-                    <i class="bi bi-chevron-right small text-white-50"></i>
-                </a>
-                <a href="/Sayfa/hakkimizda" class="drawer-nav-link">
-                    <span>Hakkımızda</span>
-                    <i class="bi bi-chevron-right small text-white-50"></i>
-                </a>
-                <a class="drawer-nav-link" data-bs-toggle="collapse" href="#drawerHizmetler" role="button" aria-expanded="false">
-                    <span>Hizmetlerimiz</span>
-                    <i class="bi bi-chevron-down small text-white-50"></i>
-                </a>
-                <div class="collapse bg-black bg-opacity-25" id="drawerHizmetler">
-                    @if (dinamikHizmetler.Any())
+                @if (dinamikMenuler != null && dinamikMenuler.Any())
+                {
+                    @foreach (var menu in dinamikMenuler)
                     {
-                        @foreach (var h in dinamikHizmetler)
+                        @if (menu.Baslik.ToLower().Contains("hizmet"))
                         {
-                            <a href="/Hizmet/Detay/@h.Id" class="drawer-sub-link">
-                                <span>@h.Baslik</span>
-                                <i class="bi bi-arrow-right-short"></i>
+                            <a class="drawer-nav-link" data-bs-toggle="collapse" href="#drawerHizmetler" role="button" aria-expanded="false">
+                                <span>@menu.Baslik</span>
+                                <i class="bi bi-chevron-down small text-white-50"></i>
+                            </a>
+                            <div class="collapse bg-black bg-opacity-25" id="drawerHizmetler">
+                                @if (dinamikHizmetler.Any())
+                                {
+                                    @foreach (var h in dinamikHizmetler)
+                                    {
+                                        <a href="/Hizmet/Detay/@h.Id" class="drawer-sub-link">
+                                            <span>@h.Baslik</span>
+                                            <i class="bi bi-arrow-right-short"></i>
+                                        </a>
+                                    }
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <a href="@menu.Url" class="drawer-nav-link">
+                                <span>@menu.Baslik</span>
+                                <i class="bi bi-chevron-right small text-white-50"></i>
                             </a>
                         }
                     }
-                    else
-                    {
-                        <a href="/#cozumler" class="drawer-sub-link"><span>Işıklı Tabela</span><i class="bi bi-arrow-right-short"></i></a>
-                        <a href="/#cozumler" class="drawer-sub-link"><span>Kutu Harf</span><i class="bi bi-arrow-right-short"></i></a>
-                    }
-                </div>
-                <a href="/Proje" class="drawer-nav-link">
-                    <span>Referanslar</span>
-                    <i class="bi bi-chevron-right small text-white-50"></i>
-                </a>
-                <a href="/Iletisim" class="drawer-nav-link">
-                    <span>İletişim</span>
-                    <i class="bi bi-chevron-right small text-white-50"></i>
-                </a>
+                }
             </div>
 
             <div class="p-4 border-top border-secondary border-opacity-25">
@@ -690,18 +684,20 @@
         </div>
     </div>
 
-    <!-- FOOTER -->
+    <!-- FOOTER (TAMAMEN DİNAMİK MENÜ) -->
     <footer class="footer-nt-full">
         <div class="container">
             <div class="row g-4">
                 <div class="col-lg-3 col-md-6">
                     <h5>HIZLI MENÜ</h5>
                     <ul class="list-unstyled small d-flex flex-column gap-2">
-                        <li><a href="/">Anasayfa</a></li>
-                        <li><a href="/Sayfa/hakkimizda">Hakkımızda</a></li>
-                        <li><a href="/#cozumler">Hizmetlerimiz</a></li>
-                        <li><a href="/Proje">Referanslar</a></li>
-                        <li><a href="/Iletisim">İletişim</a></li>
+                        @if (dinamikMenuler != null && dinamikMenuler.Any())
+                        {
+                            @foreach (var menu in dinamikMenuler)
+                            {
+                                <li><a href="@menu.Url">@menu.Baslik</a></li>
+                            }
+                        }
                     </ul>
                 </div>
 
